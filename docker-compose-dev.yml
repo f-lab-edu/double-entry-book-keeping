@@ -1,13 +1,12 @@
 services:
-  client:
-    build:
-      context: ./client
+  database: 
+    image: mysql:8
     volumes:
-      - ./client/src:/app/src:rw
-      - ./client/package.json:/app/package.json:rw
-      - ./client/package-lock.json:/app/package-lock.json:rw
-    ports:
-      - 3000:3000
+      - double-entry-book-keeping-data:/var/lib/mysql:rw
+    env_file:
+      - ./database/.env
+    networks:
+      - private
   server:
     build:
       context: ./server
@@ -18,3 +17,27 @@ services:
       - ./server/package-lock.json:/app/package-lock.json:rw
     ports:
       - 4000:3000
+    depends_on:
+      - database
+    networks:
+      - private
+      - default
+  client:
+    build:
+      context: ./client
+    volumes:
+      - ./client/src:/app/src:rw
+      - ./client/package.json:/app/package.json:rw
+      - ./client/package-lock.json:/app/package-lock.json:rw
+    ports:
+      - 3000:3000
+    depends_on:
+      - server
+    networks:
+      - default
+
+volumes:
+  double-entry-book-keeping-data:
+
+networks:
+  private:
