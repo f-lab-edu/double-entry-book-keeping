@@ -1,0 +1,3 @@
+services:
+  client:
+    container_name: double-entry-book-keeping-client

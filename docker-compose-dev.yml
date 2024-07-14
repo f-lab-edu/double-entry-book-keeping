@@ -1,0 +1,10 @@
+services:
+  client:
+    build:
+      context: ./client
+    volumes:
+      - ./client/src:/app/src:rw
+      - ./client/package.json:/app/package.json:rw
+      - ./client/package-lock.json:/app/package-lock.json:rw
+    ports:
+      - 3000:3000
