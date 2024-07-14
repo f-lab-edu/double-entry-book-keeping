@@ -1,3 +1,5 @@
 services:
   client:
     container_name: double-entry-book-keeping-client
+  server:
+    container_name: double-entry-book-keeping-server
