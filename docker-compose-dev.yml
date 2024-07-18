@@ -1,12 +1,18 @@
 services:
   database: 
-    image: mysql:8
+    build:
+      context: ./database
     volumes:
       - double-entry-book-keeping-data:/var/lib/mysql:rw
     env_file:
       - .database.env
     networks:
       - private
+    healthcheck:
+      interval: 5s
+      timeout: 3s
+      retries: 2
+      start_period: 0s
   server:
     build:
       context: ./server
