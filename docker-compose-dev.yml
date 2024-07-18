@@ -24,13 +24,17 @@ services:
       - ./server/package-lock.json:/app/package-lock.json:rw
     ports:
       - 4000:3000
-    depends_on:
-      - database
     networks:
       - private
       - default
     env_file:
       - ./server/.env
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider -q http://localhost:3000/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
   client:
     build:
       context: ./client
