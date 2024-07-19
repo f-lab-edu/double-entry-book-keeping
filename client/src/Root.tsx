@@ -1,12 +1,15 @@
 import { MaterialUiProviders } from "./providers/MaterialUiProviders";
 import { Layout } from "./layouts/Layout";
+import { Outlet } from "react-router-dom";
 
-function App() {
+function Root() {
   return (
     <MaterialUiProviders>
-      <Layout></Layout>
+      <Layout>
+        <Outlet />
+      </Layout>
     </MaterialUiProviders>
   );
 }
 
-export default App;
+export default Root;
