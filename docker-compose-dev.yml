@@ -1,0 +1,56 @@
+services:
+  database: 
+    build:
+      context: ./database
+    volumes:
+      - double-entry-book-keeping-data:/var/lib/mysql:rw
+    env_file:
+      - .database.env
+    networks:
+      - private
+    healthcheck:
+      interval: 5s
+      timeout: 3s
+      retries: 2
+      start_period: 0s
+  server:
+    build:
+      context: ./server
+      target: development
+    volumes:
+      - ./server/src:/app/src:rw
+      - ./server/prisma:/app/prisma:rw
+      - ./server/package.json:/app/package.json:rw
+      - ./server/package-lock.json:/app/package-lock.json:rw
+    ports:
+      - 4000:3000
+    networks:
+      - private
+      - default
+    env_file:
+      - ./server/.env
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider -q http://localhost:3000/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+  client:
+    build:
+      context: ./client
+    volumes:
+      - ./client/src:/app/src:rw
+      - ./client/package.json:/app/package.json:rw
+      - ./client/package-lock.json:/app/package-lock.json:rw
+    ports:
+      - 3000:3000
+    depends_on:
+      - server
+    networks:
+      - default
+
+volumes:
+  double-entry-book-keeping-data:
+
+networks:
+  private:
