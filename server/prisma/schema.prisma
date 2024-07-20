@@ -14,5 +14,9 @@ datasource db {
 }
 
 model User {
-  id Int @id @default(autoincrement())
+  id        String   @id
+  password  String
+  salt      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
