@@ -1,4 +1,4 @@
-FROM node:alpine AS development
+FROM node:alpine AS base
 
 WORKDIR /app
 
@@ -9,4 +9,17 @@ RUN npm ci
 
 COPY . .
 
-CMD [ "npm", "run", "start" ]
+FROM base AS development
+
+CMD while ! wget --spider -q http://server:3000/health; do sleep 1; done && npm run start
+
+FROM base AS builder
+
+RUN npm run build
+
+FROM nginx:alpine AS production
+
+WORKDIR /app
+
+COPY --from=builder /app/build /usr/share/nginx/html
+
