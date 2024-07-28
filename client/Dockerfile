@@ -11,7 +11,7 @@ COPY . .
 
 FROM base AS development
 
-CMD [ "npm", "run", "start"]
+CMD while ! wget --spider -q http://server:3000/health; do sleep 1; done && npm run start
 
 FROM base AS builder
 
