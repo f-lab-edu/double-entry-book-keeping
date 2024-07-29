@@ -14,11 +14,12 @@ datasource db {
 }
 
 model User {
-  id        String   @id
+  id        String    @id
   password  String
   salt      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Account   Account[]
 }
 
 enum DebitOrCredit {
@@ -36,7 +37,7 @@ enum AccountType {
 
 model Account {
   id             Int           @id @default(autoincrement())
-  name           String        @unique
+  name           String
   debitOrCredit  DebitOrCredit
   openingBalance Int
   accountType    AccountType
@@ -44,4 +45,6 @@ model Account {
   parentId       Int?
   parent         Account?      @relation("ParentChildren", fields: [parentId], references: [id])
   children       Account[]     @relation("ParentChildren")
+  user           User          @relation(fields: [userId], references: [id])
+  userId         String
 }
