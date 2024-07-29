@@ -1,12 +1,27 @@
 import { TextFieldProps } from "@mui/material";
 import React, { useReducer } from "react";
 
-interface action {
-  type: "SET_VALUE";
+export type ModifiedTextFieldProps = TextFieldProps & {
   value: string;
-}
+};
 
-const reducer: React.Reducer<TextFieldProps, action> = (state, action) => {
+type action =
+  | {
+      type: "SET_VALUE";
+      value: string;
+    }
+  | {
+      type: "SET_ERROR_MESSAGE";
+      helperText: string;
+    }
+  | {
+      type: "CLEAR_ERROR";
+    };
+
+const reducer: React.Reducer<ModifiedTextFieldProps, action> = (
+  state,
+  action
+) => {
   switch (action.type) {
     case "SET_VALUE": {
       return {
@@ -14,11 +29,21 @@ const reducer: React.Reducer<TextFieldProps, action> = (state, action) => {
         value: action.value,
       };
     }
-    default:
-      throw new Error("useTextFieldProps에 정의되지 않은 action type입니다!");
+    case "SET_ERROR_MESSAGE":
+      return {
+        ...state,
+        error: true,
+        helperText: action.helperText,
+      };
+    case "CLEAR_ERROR":
+      return {
+        ...state,
+        error: false,
+        helperText: "",
+      };
   }
 };
 
-export const useTextFieldProps = (initialState: TextFieldProps) => {
+export const useTextFieldProps = (initialState: ModifiedTextFieldProps) => {
   return useReducer(reducer, initialState);
 };
