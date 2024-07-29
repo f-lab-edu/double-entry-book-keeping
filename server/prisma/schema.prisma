@@ -39,7 +39,7 @@ model Account {
   id             Int           @id @default(autoincrement())
   name           String
   debitOrCredit  DebitOrCredit
-  openingBalance Int
+  openingBalance Int           @default(0)
   accountType    AccountType
   isActive       Boolean       @default(true)
   parentId       Int?
