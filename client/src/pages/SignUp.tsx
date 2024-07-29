@@ -9,9 +9,15 @@ import {
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useSignUpForm } from "../hooks/useSignUpForm";
+import { useRedirectToMainIfAuthenticated } from "../hooks/utils/useRedirectToMainIfAuthenticated";
 
 export const SignUp = () => {
-  const { idProps, password1Props, password2Props } = useSignUpForm();
+  const { idProps, password1Props, password2Props, onClickSubmitButton } =
+    useSignUpForm();
+
+  const { isLoading } = useRedirectToMainIfAuthenticated();
+
+  if (isLoading) return <>로딩중입니다...</>;
 
   return (
     <Box
@@ -28,7 +34,7 @@ export const SignUp = () => {
       <Typography component="h1" variant="h5">
         회원가입
       </Typography>
-      <Box component="form" noValidate onSubmit={() => {}} sx={{ mt: 3 }}>
+      <Box component="form" noValidate sx={{ mt: 3 }}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField
@@ -59,15 +65,10 @@ export const SignUp = () => {
           </Grid>
         </Grid>
         <Button
-          // type="submit"
           fullWidth
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
-          onClick={() => {
-            console.log(idProps);
-            console.log(password1Props);
-            console.log(password2Props);
-          }}
+          onClick={onClickSubmitButton}
         >
           가입하기
         </Button>

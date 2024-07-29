@@ -9,9 +9,14 @@ import {
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useSignInForm } from "../hooks/useSignInForm";
+import { useRedirectToMainIfAuthenticated } from "../hooks/utils/useRedirectToMainIfAuthenticated";
 
 export const SignIn = () => {
   const { idProps, passwordProps } = useSignInForm();
+
+  const { isLoading } = useRedirectToMainIfAuthenticated();
+
+  if (isLoading) return <>로딩중입니다...</>;
 
   return (
     <Box

@@ -1,14 +1,18 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
+  Req,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Prisma } from '@prisma/client';
-import { Response } from 'express';
+import { Request, Response } from 'express';
+import { AuthGuard } from './auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -24,7 +28,7 @@ export class AuthController {
 
     response.cookie('jwt', access_token, {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
     });
 
@@ -41,10 +45,19 @@ export class AuthController {
 
     response.cookie('jwt', access_token, {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
     });
 
     return { message };
+  }
+
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
+  @Get('is-authenticated')
+  async isAuthenticated(@Req() request: Request) {
+    const user = request['user'];
+
+    return { user };
   }
 }
