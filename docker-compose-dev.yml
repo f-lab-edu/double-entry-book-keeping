@@ -48,6 +48,8 @@ services:
       - server
     networks:
       - default
+    env_file:
+      - ./client/.env
 
 volumes:
   double-entry-book-keeping-data:
