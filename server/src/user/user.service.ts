@@ -17,6 +17,37 @@ export class UserService {
           id,
           password: hashedPassword,
           salt,
+          accounts: {
+            createMany: {
+              data: [
+                {
+                  name: '자산',
+                  accountType: 'ASSETS',
+                  debitOrCredit: 'DEBIT',
+                },
+                {
+                  name: '부채',
+                  accountType: 'LIABILITIES',
+                  debitOrCredit: 'CREDIT',
+                },
+                {
+                  name: '자본',
+                  accountType: 'EQUITY',
+                  debitOrCredit: 'CREDIT',
+                },
+                {
+                  name: '비용',
+                  accountType: 'EXPENSES',
+                  debitOrCredit: 'DEBIT',
+                },
+                {
+                  name: '수익',
+                  accountType: 'REVENUE',
+                  debitOrCredit: 'CREDIT',
+                },
+              ],
+            },
+          },
         },
       });
     }
