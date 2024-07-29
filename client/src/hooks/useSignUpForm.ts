@@ -55,7 +55,7 @@ export const useSignUpForm: () => {
       navigate("/");
     },
     onError: (error) => {
-      if (error.response?.data?.message) {
+      if (error.response?.data?.statusCode === 409) {
         idDispatch({
           type: "SET_ERROR_MESSAGE",
           helperText: error.response.data.message,
@@ -66,6 +66,8 @@ export const useSignUpForm: () => {
         password2Dispatch({
           type: "CLEAR_ERROR",
         });
+      } else {
+        alert(error);
       }
     },
   });

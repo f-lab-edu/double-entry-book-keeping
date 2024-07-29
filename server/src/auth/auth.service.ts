@@ -33,7 +33,7 @@ export class AuthService {
     const user = await this.userService.read(data.id);
 
     if (!user) {
-      throw new NotFoundException();
+      throw new NotFoundException('해당 아이디의 유저는 존재하지 않습니다.');
     }
 
     const { salt, password: hashedPassword } = user;
@@ -41,7 +41,7 @@ export class AuthService {
     const hash = await bcrypt.hash(data.password, salt);
 
     if (hash !== hashedPassword) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('올바른 비밀번호를 입력해주세요');
     }
 
     const payload = { sub: user.id };

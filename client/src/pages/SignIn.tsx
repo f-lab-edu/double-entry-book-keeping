@@ -12,7 +12,7 @@ import { useSignInForm } from "../hooks/useSignInForm";
 import { useRedirectToMainIfAuthenticated } from "../hooks/utils/useRedirectToMainIfAuthenticated";
 
 export const SignIn = () => {
-  const { idProps, passwordProps } = useSignInForm();
+  const { idProps, passwordProps, onClickSubmitButton } = useSignInForm();
 
   const { isLoading } = useRedirectToMainIfAuthenticated();
 
@@ -61,6 +61,7 @@ export const SignIn = () => {
             mt: 3,
             mb: 2,
           }}
+          onClick={onClickSubmitButton}
         >
           로그인
         </Button>
