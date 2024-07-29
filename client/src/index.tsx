@@ -2,13 +2,10 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import Root from "./Root";
 import reportWebVitals from "./reportWebVitals";
-import {
-  createBrowserRouter,
-  Navigate,
-  RouterProvider,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { SignIn } from "./pages/SignIn";
 import { SignUp } from "./pages/SignUp";
+import { Main } from "./pages/Main";
 
 const router = createBrowserRouter([
   {
@@ -17,7 +14,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Navigate to="/sign-in" replace />,
+        element: <Main />,
       },
       {
         path: "/sign-in",
