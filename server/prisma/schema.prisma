@@ -20,3 +20,28 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+enum DebitOrCredit {
+  DEBIT
+  CREDIT
+}
+
+enum AccountType {
+  ASSETS
+  LIABILITIES
+  EQUITY
+  REVENUE
+  EXPENSES
+}
+
+model Account {
+  id             Int           @id @default(autoincrement())
+  name           String        @unique
+  debitOrCredit  DebitOrCredit
+  openingBalance Int
+  accountType    AccountType
+  isActive       Boolean       @default(true)
+  parentId       Int?
+  parent         Account?      @relation("ParentChildren", fields: [parentId], references: [id])
+  children       Account[]     @relation("ParentChildren")
+}
