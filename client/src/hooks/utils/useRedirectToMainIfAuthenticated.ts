@@ -3,15 +3,15 @@ import { useIsAuthenticated } from "../queries/useIsAuthenticated";
 import { useEffect } from "react";
 
 export const useRedirectToMainIfAuthenticated = () => {
-  const { isLoading, isError } = useIsAuthenticated();
+  const { isSuccess, isLoading } = useIsAuthenticated();
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isError) {
+    if (isSuccess) {
       navigate("/");
     }
-  }, [isError]);
+  }, [isSuccess]);
 
   return {
     isLoading,
