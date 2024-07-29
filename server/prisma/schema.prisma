@@ -45,7 +45,8 @@ model Account {
   parentName     String?
   parent         Account?      @relation("ParentChildren", fields: [userId, parentName], references: [userId, name])
   children       Account[]     @relation("ParentChildren")
-  user           User          @relation(fields: [userId], references: [id])
+  // 계정과목의 삭제는 지원하지 않지만, 사용자가 회원탈퇴한 경우에는 삭제를 하는 것이 맞으므로
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, name])
   @@index([userId, parentName])
