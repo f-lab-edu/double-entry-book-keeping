@@ -33,6 +33,10 @@ export class AuthGuard implements CanActivate {
   }
 
   private extractJwtFromHeader(request: Request): string | undefined {
+    if (!request.headers.cookie) {
+      throw new UnauthorizedException();
+    }
+
     const cookies: string[] = request.headers.cookie.split('; ');
 
     if (cookies.length == 0) {
