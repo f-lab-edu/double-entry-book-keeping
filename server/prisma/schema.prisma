@@ -14,12 +14,28 @@ datasource db {
 }
 
 model User {
-  id        String    @id
-  password  String
-  salt      String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  accounts  Account[]
+  id                 String             @id
+  password           String
+  salt               String
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  accounts           Account[]
+  transactionParties TransactionParty[]
+  tags               Tag[]
+  fixedTransactions  FixedTransaction[]
+}
+
+// 같은 가계 안에서도 거래의 주체가 달라질 수 있음
+model TransactionParty {
+  userId           String
+  user             User               @relation(fields: [userId], references: [id])
+  name             String
+  transactions     Transaction[]
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  FixedTransaction FixedTransaction[]
+
+  @@id([userId, name])
 }
 
 enum DebitOrCredit {
@@ -36,18 +52,152 @@ enum AccountType {
 }
 
 model Account {
-  userId         String
-  name           String
-  debitOrCredit  DebitOrCredit
-  openingBalance Int           @default(0)
-  accountType    AccountType
-  isActive       Boolean       @default(true)
-  parentName     String?
-  parent         Account?      @relation("ParentChildren", fields: [userId, parentName], references: [userId, name])
-  children       Account[]     @relation("ParentChildren")
-  // 계정과목의 삭제는 지원하지 않지만, 사용자가 회원탈퇴한 경우에는 삭제를 하는 것이 맞으므로
-  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId             String
+  name               String
+  debitOrCredit      DebitOrCredit
+  accountType        AccountType
+  isActive           Boolean            @default(true)
+  parentName         String?
+  // 개별 계정과목의 삭제를 지원하지는 않지만, 회원탈퇴시 모든 계정과목이 삭제되어야 하므로 Cascasde
+  parent             Account?           @relation("ParentChildren", fields: [userId, parentName], references: [userId, name], onDelete: Cascade)
+  children           Account[]          @relation("ParentChildren")
+  // 계정과목의 삭제는 지원하지 않지만, 사용자가 회원탈퇴한 경우에는 삭제를 하는 것이 맞으므로 Cascade
+  user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accountBalances    AccountBalance[]
+  debitTransactions  Transaction[]      @relation("DebitAccount")
+  creditTransactions Transaction[]      @relation("CreditAccount")
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  debitFixedTxs      FixedTransaction[] @relation("DebitAccountForFixedTx")
+  creditFixedTxs     FixedTransaction[] @relation("CreditAccountForFixedTx")
 
   @@id([userId, name])
-  @@index([userId, parentName])
+}
+
+// 계정의 각 회계연도초 잔액
+model AccountBalance {
+  accountUserId String
+  accountName   String
+  fiscalYear    Int
+  account       Account  @relation(fields: [accountUserId, accountName], references: [userId, name])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@id([accountUserId, accountName, fiscalYear])
+}
+
+model Transaction {
+  id                   Int              @id @default(autoincrement())
+  userId               String
+  debitAccountName     String
+  debitAccount         Account          @relation("DebitAccount", fields: [userId, debitAccountName], references: [userId, name])
+  creditAccountName    String
+  creditAccount        Account          @relation("CreditAccount", fields: [userId, creditAccountName], references: [userId, name])
+  date                 DateTime
+  where                String
+  transactionPartyName String
+  transactionParty     TransactionParty @relation(fields: [userId, transactionPartyName], references: [userId, name])
+  description          String
+  includeSimulation    Boolean
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+  transactionTags      TransactionTag[]
+}
+
+enum TagCategory {
+  GENERAL
+  BUDGET
+  PROFIT
+}
+
+model Tag {
+  userId          String
+  user            User             @relation(fields: [userId], references: [id])
+  name            String
+  category        TagCategory      @default(GENERAL)
+  transactionTags TransactionTag[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  budgets         Budget[]
+  profitTargets   ProfitTarget[]
+
+  @@id([userId, name])
+}
+
+model TransactionTag {
+  id                 Int               @id @default(autoincrement())
+  transactionId      Int
+  transaction        Transaction       @relation(fields: [transactionId], references: [id])
+  userId             String
+  tagName            String
+  tag                Tag               @relation(fields: [userId, tagName], references: [userId, name])
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+  fixedTransaction   FixedTransaction? @relation(fields: [fixedTransactionId], references: [id])
+  fixedTransactionId Int?
+}
+
+model Budget {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  // 예산중심점인 Tag(BUDGET)
+  tagName   String
+  tag       Tag      @relation(fields: [userId, tagName], references: [userId, name])
+  // 에산 기간 
+  // 일반적으로는 월단위로 편성될 것이나, 추후 커스텀을 위해
+  startDate DateTime
+  endDate   DateTime
+  // 예산 금액
+  amount    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ProfitTarget {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  // 수익중심점인 Tag(PROFIT)
+  tagName   String
+  tag       Tag      @relation(fields: [userId, tagName], references: [userId, name])
+  // 수익 달성을 목표로 하는 기간
+  startDate DateTime
+  endDate   DateTime
+  // 목표 수익 금액
+  amount    Int
+  // 목표수익률
+  rate      Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Cycle {
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
+model FixedTransaction {
+  id                   Int              @id @default(autoincrement())
+  userId               String
+  user                 User             @relation(fields: [userId], references: [id])
+  debitAccountName     String
+  debitAccount         Account          @relation("DebitAccountForFixedTx", fields: [userId, debitAccountName], references: [userId, name])
+  creditAccountName    String
+  creditAccount        Account          @relation("CreditAccountForFixedTx", fields: [userId, creditAccountName], references: [userId, name])
+  where                String
+  transactionPartyName String
+  transactionParty     TransactionParty @relation(fields: [userId, transactionPartyName], references: [userId, name])
+  description          String
+  includeSimulation    Boolean
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+  transactionTags      TransactionTag[]
+  // 고정 거래가 일어날 기간. endDate값이 없으면 언제까지고 계속 발생
+  startDate            DateTime
+  endDate              DateTime?
+  // 반복주기
+  cycle                Cycle
+  // 거래가 일어날 날짜 ex) 3일, 5일 등
+  day                  Int
 }
