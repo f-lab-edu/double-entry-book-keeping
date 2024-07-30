@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { UserService } from './user.service';
 import { PrismaModule } from 'src/prisma/prisma.module';
+import { DateTimeModule } from 'src/date-time/date-time.module';
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule, DateTimeModule],
   providers: [UserService],
   exports: [UserService],
 })

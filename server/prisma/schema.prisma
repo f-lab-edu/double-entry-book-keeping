@@ -79,6 +79,7 @@ model AccountBalance {
   accountUserId String
   accountName   String
   fiscalYear    Int
+  balance       Int      @default(0)
   account       Account  @relation(fields: [accountUserId, accountName], references: [userId, name])
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
