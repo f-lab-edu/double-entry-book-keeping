@@ -4,16 +4,20 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Account, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateAccountInput, UpdateAccountInput } from './types';
+import { DateTimeService } from 'src/date-time/date-time.service';
 
 @Injectable()
 export class AccountService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly dateTimeService: DateTimeService,
+  ) {}
 
   async create(createAccountInput: CreateAccountInput) {
-    const { userId, name, debitOrCredit, accountType } = createAccountInput;
+    const { userId, name, parentName } = createAccountInput;
 
     const account = await this.readUnique({
       userId_name: {
@@ -24,16 +28,35 @@ export class AccountService {
 
     if (account) {
       throw new ConflictException('같은 이름의 계정과목이 이미 존재합니다.');
-    } else {
-      return this.prisma.account.create({
-        data: {
-          userId,
-          name,
-          debitOrCredit,
-          accountType,
-        },
-      });
     }
+
+    const parentAccount = await this.readUnique({
+      userId_name: {
+        userId,
+        name: parentName,
+      },
+    });
+
+    if (!parentAccount) {
+      throw new NotFoundException(
+        `${parentAccount}라는 부모 계정과목이 존재하지 않습니다.`,
+      );
+    }
+
+    return this.prisma.account.create({
+      data: {
+        userId,
+        parentName,
+        name,
+        debitOrCredit: parentAccount.debitOrCredit,
+        accountType: parentAccount.accountType,
+        accountBalances: {
+          create: {
+            fiscalYear: this.dateTimeService.getCurrentYear(),
+          },
+        },
+      },
+    });
   }
 
   async update(updateAccountInput: UpdateAccountInput) {
@@ -98,7 +121,17 @@ export class AccountService {
             name,
           },
         },
-        data,
+        data: {
+          ...data,
+          accountType:
+            accountWithParentName.accountType !== account.accountType
+              ? accountWithParentName.accountType
+              : undefined,
+          debitOrCredit:
+            accountWithParentName.debitOrCredit !== account.debitOrCredit
+              ? accountWithParentName.debitOrCredit
+              : undefined,
+        },
       });
     }
 
