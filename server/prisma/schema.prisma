@@ -99,6 +99,7 @@ model Transaction {
   creditAccountName    String
   creditAccount        Account          @relation("CreditAccount", fields: [userId, creditAccountName], references: [userId, name])
   date                 DateTime
+  amount               Int
   where                String
   transactionPartyName String
   transactionParty     TransactionParty @relation(fields: [userId, transactionPartyName], references: [userId, name])
