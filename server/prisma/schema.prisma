@@ -23,17 +23,20 @@ model User {
   transactionParties TransactionParty[]
   tags               Tag[]
   fixedTransactions  FixedTransaction[]
+  transactions       Transaction[]
+  budgets            Budget[]
+  profitTargets      ProfitTarget[]
 }
 
 // 같은 가계 안에서도 거래의 주체가 달라질 수 있음
 model TransactionParty {
-  userId           String
-  user             User               @relation(fields: [userId], references: [id])
-  name             String
-  transactions     Transaction[]
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
-  FixedTransaction FixedTransaction[]
+  userId            String
+  user              User               @relation(fields: [userId], references: [id])
+  name              String
+  transactions      Transaction[]
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  fixedTransactions FixedTransaction[]
 
   @@id([userId, name])
 }
@@ -90,6 +93,7 @@ model AccountBalance {
 model Transaction {
   id                   Int              @id @default(autoincrement())
   userId               String
+  user                 User             @relation(fields: [userId], references: [id])
   debitAccountName     String
   debitAccount         Account          @relation("DebitAccount", fields: [userId, debitAccountName], references: [userId, name])
   creditAccountName    String
@@ -141,6 +145,7 @@ model TransactionTag {
 model Budget {
   id        Int      @id @default(autoincrement())
   userId    String
+  user      User     @relation(fields: [userId], references: [id])
   // 예산중심점인 Tag(BUDGET)
   tagName   String
   tag       Tag      @relation(fields: [userId, tagName], references: [userId, name])
@@ -157,6 +162,7 @@ model Budget {
 model ProfitTarget {
   id        Int      @id @default(autoincrement())
   userId    String
+  user      User     @relation(fields: [userId], references: [id])
   // 수익중심점인 Tag(PROFIT)
   tagName   String
   tag       Tag      @relation(fields: [userId, tagName], references: [userId, name])
