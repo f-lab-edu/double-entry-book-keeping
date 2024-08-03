@@ -30,6 +30,7 @@ model User {
 
 // 같은 가계 안에서도 거래의 주체가 달라질 수 있음
 model TransactionParty {
+  id                String             @id @default(uuid())
   userId            String
   user              User               @relation(fields: [userId], references: [id])
   name              String
@@ -38,7 +39,7 @@ model TransactionParty {
   updatedAt         DateTime           @updatedAt
   fixedTransactions FixedTransaction[]
 
-  @@id([userId, name])
+  @@unique([userId, name])
 }
 
 enum DebitOrCredit {
@@ -55,6 +56,7 @@ enum AccountType {
 }
 
 model Account {
+  id                 String             @id @default(uuid())
   userId             String
   name               String
   debitOrCredit      DebitOrCredit
@@ -74,40 +76,39 @@ model Account {
   debitFixedTxs      FixedTransaction[] @relation("DebitAccountForFixedTx")
   creditFixedTxs     FixedTransaction[] @relation("CreditAccountForFixedTx")
 
-  @@id([userId, name])
+  @@unique([userId, name])
 }
 
 // 계정의 각 회계연도초 잔액
 model AccountBalance {
-  accountUserId String
-  accountName   String
-  fiscalYear    Int
-  balance       Int      @default(0)
-  account       Account  @relation(fields: [accountUserId, accountName], references: [userId, name])
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  accountId  String
+  fiscalYear Int
+  balance    Int      @default(0)
+  account    Account  @relation(fields: [accountId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  @@id([accountUserId, accountName, fiscalYear])
+  @@id([accountId, fiscalYear])
 }
 
 model Transaction {
-  id                   Int              @id @default(autoincrement())
-  userId               String
-  user                 User             @relation(fields: [userId], references: [id])
-  debitAccountName     String
-  debitAccount         Account          @relation("DebitAccount", fields: [userId, debitAccountName], references: [userId, name])
-  creditAccountName    String
-  creditAccount        Account          @relation("CreditAccount", fields: [userId, creditAccountName], references: [userId, name])
-  date                 DateTime
-  amount               Int
-  where                String
-  transactionPartyName String
-  transactionParty     TransactionParty @relation(fields: [userId, transactionPartyName], references: [userId, name])
-  description          String
-  includeSimulation    Boolean
-  createdAt            DateTime         @default(now())
-  updatedAt            DateTime         @updatedAt
-  transactionTags      TransactionTag[]
+  id                 String           @id @default(uuid())
+  userId             String
+  user               User             @relation(fields: [userId], references: [id])
+  debitAccountId     String
+  debitAccount       Account          @relation("DebitAccount", fields: [debitAccountId], references: [id])
+  creditAccountId    String
+  creditAccount      Account          @relation("CreditAccount", fields: [creditAccountId], references: [id])
+  date               DateTime
+  amount             Int
+  where              String
+  transactionPartyId String
+  transactionParty   TransactionParty @relation(fields: [transactionPartyId], references: [id])
+  description        String
+  includeSimulation  Boolean
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  transactionTags    TransactionTag[]
 }
 
 enum TagCategory {
@@ -135,7 +136,7 @@ model Tag {
 
 model TransactionTag {
   id                 Int               @id @default(autoincrement())
-  transactionId      Int
+  transactionId      String
   transaction        Transaction       @relation(fields: [transactionId], references: [id])
   userId             String
   tagName            String
@@ -189,26 +190,26 @@ enum Cycle {
 }
 
 model FixedTransaction {
-  id                   Int              @id @default(autoincrement())
-  userId               String
-  user                 User             @relation(fields: [userId], references: [id])
-  debitAccountName     String
-  debitAccount         Account          @relation("DebitAccountForFixedTx", fields: [userId, debitAccountName], references: [userId, name])
-  creditAccountName    String
-  creditAccount        Account          @relation("CreditAccountForFixedTx", fields: [userId, creditAccountName], references: [userId, name])
-  where                String
-  transactionPartyName String
-  transactionParty     TransactionParty @relation(fields: [userId, transactionPartyName], references: [userId, name])
-  description          String
-  includeSimulation    Boolean
-  createdAt            DateTime         @default(now())
-  updatedAt            DateTime         @updatedAt
-  transactionTags      TransactionTag[]
+  id                  Int              @id @default(autoincrement())
+  userId              String
+  user                User             @relation(fields: [userId], references: [id])
+  debitAccountId      String
+  debitAccount        Account          @relation("DebitAccountForFixedTx", fields: [debitAccountId], references: [id])
+  creditAccountId     String
+  creditAccount       Account          @relation("CreditAccountForFixedTx", fields: [creditAccountId], references: [id])
+  where               String
+  transactionPartyId  String
+  transactionParty    TransactionParty @relation(fields: [transactionPartyId], references: [id])
+  description         String
+  includeSimulation   Boolean
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+  transactionTags     TransactionTag[]
   // 고정 거래가 일어날 기간. endDate값이 없으면 언제까지고 계속 발생
-  startDate            DateTime
-  endDate              DateTime?
+  startDate           DateTime
+  endDate             DateTime?
   // 반복주기
-  cycle                Cycle
+  cycle               Cycle
   // 반복주기의 배수
-  frequencyMultiplier  Int
+  frequencyMultiplier Int
 }
