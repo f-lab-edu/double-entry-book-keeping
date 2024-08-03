@@ -209,6 +209,6 @@ model FixedTransaction {
   endDate              DateTime?
   // 반복주기
   cycle                Cycle
-  // 거래가 일어날 날짜 ex) 3일, 5일 등
-  day                  Int
+  // 반복주기의 배수
+  frequencyMultiplier  Int
 }
