@@ -62,9 +62,9 @@ model Account {
   debitOrCredit      DebitOrCredit
   accountType        AccountType
   isActive           Boolean            @default(true)
-  parentName         String?
+  parentId           String?
   // 개별 계정과목의 삭제를 지원하지는 않지만, 회원탈퇴시 모든 계정과목이 삭제되어야 하므로 Cascasde
-  parent             Account?           @relation("ParentChildren", fields: [userId, parentName], references: [userId, name], onDelete: Cascade)
+  parent             Account?           @relation("ParentChildren", fields: [parentId], references: [id], onDelete: Cascade)
   children           Account[]          @relation("ParentChildren")
   // 계정과목의 삭제는 지원하지 않지만, 사용자가 회원탈퇴한 경우에는 삭제를 하는 것이 맞으므로 Cascade
   user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -118,12 +118,13 @@ enum TagCategory {
 }
 
 model Tag {
+  id              String           @id @default(uuid())
   userId          String
   user            User             @relation(fields: [userId], references: [id])
   name            String
   category        TagCategory      @default(GENERAL)
-  parentName      String
-  parent          Tag              @relation("ParentChildren", fields: [userId, parentName], references: [userId, name], onDelete: Cascade)
+  parentId        String
+  parent          Tag              @relation("ParentChildren", fields: [parentId], references: [id], onDelete: Cascade)
   children        Tag[]            @relation("ParentChildren")
   transactionTags TransactionTag[]
   createdAt       DateTime         @default(now())
@@ -131,7 +132,7 @@ model Tag {
   budgets         Budget[]
   profitTargets   ProfitTarget[]
 
-  @@id([userId, name])
+  @@unique([userId, name])
 }
 
 model TransactionTag {

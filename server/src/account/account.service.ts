@@ -17,7 +17,7 @@ export class AccountService {
   ) {}
 
   async create(createAccountInput: CreateAccountInput) {
-    const { userId, name, parentName } = createAccountInput;
+    const { userId, name, parentId } = createAccountInput;
 
     const account = await this.readUnique({
       userId_name: {
@@ -31,10 +31,7 @@ export class AccountService {
     }
 
     const parentAccount = await this.readUnique({
-      userId_name: {
-        userId,
-        name: parentName,
-      },
+      id: parentId,
     });
 
     if (!parentAccount) {
@@ -46,7 +43,7 @@ export class AccountService {
     return this.prisma.account.create({
       data: {
         userId,
-        parentName,
+        parentId,
         name,
         debitOrCredit: parentAccount.debitOrCredit,
         accountType: parentAccount.accountType,
@@ -100,17 +97,14 @@ export class AccountService {
       });
     }
 
-    if (data.parentName) {
+    if (data.parentId) {
       const accountWithParentName = await this.readUnique({
-        userId_name: {
-          userId,
-          name: data.parentName,
-        },
+        id: data.parentId,
       });
 
       if (!accountWithParentName) {
         throw new NotFoundException(
-          `${data.parentName}이라는 계정과목이 존재하지 않아 부모 계정과목으로 지정할 수 없습니다.`,
+          `아이디가 ${data.parentId}라는 계정과목이 존재하지 않아 부모 계정과목으로 지정할 수 없습니다.`,
         );
       }
 
@@ -130,6 +124,10 @@ export class AccountService {
           debitOrCredit:
             accountWithParentName.debitOrCredit !== account.debitOrCredit
               ? accountWithParentName.debitOrCredit
+              : undefined,
+          isActive:
+            accountWithParentName.isActive !== account.isActive
+              ? accountWithParentName.isActive
               : undefined,
         },
       });

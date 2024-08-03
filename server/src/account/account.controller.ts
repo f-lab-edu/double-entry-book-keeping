@@ -53,7 +53,7 @@ export class AccountController {
     return this.accountService.readMany({
       where: {
         userId: req.user.sub,
-        parentName: null,
+        parentId: null,
       },
       include: {
         children: {
