@@ -121,6 +121,9 @@ model Tag {
   user            User             @relation(fields: [userId], references: [id])
   name            String
   category        TagCategory      @default(GENERAL)
+  parentName      String
+  parent          Tag              @relation("ParentChildren", fields: [userId, parentName], references: [userId, name], onDelete: Cascade)
+  children        Tag[]            @relation("ParentChildren")
   transactionTags TransactionTag[]
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
