@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -33,16 +34,14 @@ export class AccountController {
 
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
-  @Patch(':name')
+  @Patch(':id')
   async update(
-    @Request() req,
-    @Param('name') name: string,
-    @Body() body: Omit<UpdateAccountInput, 'userId' | 'name'>,
+    @Param('id') id: string,
+    @Body() body: UpdateAccountInput['data'],
   ) {
     return this.accountService.update({
-      userId: req.user.sub,
-      name,
-      ...body,
+      id,
+      data: body,
     });
   }
 

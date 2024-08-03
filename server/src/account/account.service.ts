@@ -8,6 +8,7 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateAccountInput, UpdateAccountInput } from './types';
 import { DateTimeService } from 'src/date-time/date-time.service';
+import { isUndefined } from 'lodash';
 
 @Injectable()
 export class AccountService {
@@ -36,7 +37,7 @@ export class AccountService {
 
     if (!parentAccount) {
       throw new NotFoundException(
-        `${parentAccount}라는 부모 계정과목이 존재하지 않습니다.`,
+        `아이디가 ${parentId}인 부모 계정과목이 존재하지 않습니다.`,
       );
     }
 
@@ -57,13 +58,10 @@ export class AccountService {
   }
 
   async update(updateAccountInput: UpdateAccountInput) {
-    const { userId, name, data } = updateAccountInput;
+    const { id, data } = updateAccountInput;
 
     const account = await this.readUnique({
-      userId_name: {
-        userId,
-        name,
-      },
+      id,
     });
 
     if (!account) {
@@ -75,7 +73,7 @@ export class AccountService {
     if (data.name) {
       const accountWithChangedName = await this.readUnique({
         userId_name: {
-          userId,
+          userId: account.userId,
           name: data.name,
         },
       });
@@ -89,7 +87,7 @@ export class AccountService {
       return this.prisma.account.update({
         where: {
           userId_name: {
-            userId,
+            userId: account.userId,
             name: data.name,
           },
         },
@@ -98,11 +96,11 @@ export class AccountService {
     }
 
     if (data.parentId) {
-      const accountWithParentName = await this.readUnique({
+      const parentAccount = await this.readUnique({
         id: data.parentId,
       });
 
-      if (!accountWithParentName) {
+      if (!parentAccount) {
         throw new NotFoundException(
           `아이디가 ${data.parentId}라는 계정과목이 존재하지 않아 부모 계정과목으로 지정할 수 없습니다.`,
         );
@@ -110,31 +108,39 @@ export class AccountService {
 
       return this.prisma.account.update({
         where: {
-          userId_name: {
-            userId,
-            name,
-          },
+          id,
         },
         data: {
           ...data,
           accountType:
-            accountWithParentName.accountType !== account.accountType
-              ? accountWithParentName.accountType
+            parentAccount.accountType !== account.accountType
+              ? parentAccount.accountType
               : undefined,
           debitOrCredit:
-            accountWithParentName.debitOrCredit !== account.debitOrCredit
-              ? accountWithParentName.debitOrCredit
+            parentAccount.debitOrCredit !== account.debitOrCredit
+              ? parentAccount.debitOrCredit
               : undefined,
           isActive:
-            accountWithParentName.isActive !== account.isActive
-              ? accountWithParentName.isActive
+            parentAccount.isActive !== account.isActive
+              ? parentAccount.isActive
               : undefined,
         },
       });
     }
 
+    if (!isUndefined(data.isActive)) {
+      return this.prisma.account.update({
+        where: {
+          id,
+        },
+        data: {
+          ...data,
+        },
+      });
+    }
+
     throw new BadRequestException(
-      '계정과목 이름이나 부모 계정과목 중 바꿀 것을 적어도 하나 이상 지정해야 합니다.',
+      '계정과목 이름이나 부모 계정과목, 혹은 계정 활성화 여부 중 바꿀 것을 적어도 하나 이상 지정해야 합니다.',
     );
   }
 
