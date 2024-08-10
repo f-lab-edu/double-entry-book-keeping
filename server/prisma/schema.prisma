@@ -24,7 +24,6 @@ model User {
   tags               Tag[]
   fixedTransactions  FixedTransaction[]
   transactions       Transaction[]
-  profitTargets      ProfitTarget[]
 }
 
 // 같은 가계 안에서도 거래의 주체가 달라질 수 있음
@@ -163,11 +162,9 @@ model Budget {
 
 model ProfitTarget {
   id        Int      @id @default(autoincrement())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
   // 수익중심점인 Tag(PROFIT)
-  tagName   String
-  tag       Tag      @relation(fields: [userId, tagName], references: [userId, name])
+  tagId     String
+  tag       Tag      @relation(fields: [tagId], references: [id])
   // 수익 달성을 목표로 하는 기간
   startDate DateTime
   endDate   DateTime
