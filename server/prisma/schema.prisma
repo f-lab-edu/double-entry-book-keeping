@@ -122,38 +122,37 @@ enum TagCategory {
 }
 
 model Tag {
-  id              String           @id @default(uuid())
-  userId          String
+  id                    String                @id @default(uuid())
+  userId                String
   // 사용자 탈퇴시 사용자가 생성한 태그는 삭제되어야 한다.
-  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name            String
-  category        TagCategory      @default(GENERAL)
-  parentId        String
-  isActive        Boolean          @default(true)
+  user                  User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name                  String
+  category              TagCategory           @default(GENERAL)
+  parentId              String
+  isActive              Boolean               @default(true)
   // 태그의 삭제는 지원하지 않지만, 사용자의 탈퇴 시에는 관련 태그를 전부 삭제해야 한다.
-  parent          Tag              @relation("ParentChildren", fields: [parentId], references: [id], onDelete: Cascade)
-  children        Tag[]            @relation("ParentChildren")
-  transactionTags TransactionTag[]
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-  budgets         Budget[]
-  profitTargets   ProfitTarget[]
+  parent                Tag                   @relation("ParentChildren", fields: [parentId], references: [id], onDelete: Cascade)
+  children              Tag[]                 @relation("ParentChildren")
+  transactionTags       TransactionTag[]
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @updatedAt
+  budgets               Budget[]
+  profitTargets         ProfitTarget[]
+  fixtedTransactionTags FixedTransactionTag[]
 
   @@unique([userId, name])
 }
 
 model TransactionTag {
-  id                 Int               @id @default(autoincrement())
-  transactionId      String
+  id            Int         @id @default(autoincrement())
+  transactionId String
   // 거래 제거시에는 관련 태그도 삭제해야 한다.
-  transaction        Transaction       @relation(fields: [transactionId], references: [id], onDelete: Cascade)
-  tagId              String
+  transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  tagId         String
   // 태그가 제거되었다는 것은 사용자가 탈퇴되었다는 것
-  tag                Tag               @relation(fields: [tagId], references: [id], onDelete: Cascade)
-  createdAt          DateTime          @default(now())
-  updatedAt          DateTime          @updatedAt
-  fixedTransaction   FixedTransaction? @relation(fields: [fixedTransactionId], references: [id])
-  fixedTransactionId Int?
+  tag           Tag         @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 }
 
 model Budget {
@@ -197,30 +196,42 @@ enum Cycle {
 }
 
 model FixedTransaction {
-  id                  Int              @id @default(autoincrement())
-  userId              String
+  id                    String                @id @default(uuid())
+  userId                String
   // 사용자가 탈퇴하면 고정 거래도 삭제해야 한다.
-  user                User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  debitAccountId      String
+  user                  User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  debitAccountId        String
   // 계정과목의 삭제는 지원하지 않지만, 사용자의 탈퇴로 계정과목이 삭제될 경우 관련 거래도 삭제되어야 한다.
-  debitAccount        Account          @relation("DebitAccountForFixedTx", fields: [debitAccountId], references: [id], onDelete: Cascade)
-  creditAccountId     String
+  debitAccount          Account               @relation("DebitAccountForFixedTx", fields: [debitAccountId], references: [id], onDelete: Cascade)
+  creditAccountId       String
   // 계정과목의 삭제는 지원하지 않지만, 사용자의 탈퇴로 계정과목이 삭제될 경우 관련 거래도 삭제되어야 한다.
-  creditAccount       Account          @relation("CreditAccountForFixedTx", fields: [creditAccountId], references: [id], onDelete: Cascade)
-  where               String
-  transactionPartyId  String
+  creditAccount         Account               @relation("CreditAccountForFixedTx", fields: [creditAccountId], references: [id], onDelete: Cascade)
+  where                 String
+  transactionPartyId    String
   // 거래주체의 삭제는 지원하지 않지만, 사용자의 탈퇴로 거래주체가 삭제되면 관련 거래도 삭제되어야 한다.
-  transactionParty    TransactionParty @relation(fields: [transactionPartyId], references: [id], onDelete: Cascade)
-  description         String
-  includeSimulation   Boolean
-  createdAt           DateTime         @default(now())
-  updatedAt           DateTime         @updatedAt
-  transactionTags     TransactionTag[]
+  transactionParty      TransactionParty      @relation(fields: [transactionPartyId], references: [id], onDelete: Cascade)
+  description           String
+  includeSimulation     Boolean
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @updatedAt
   // 고정 거래가 일어날 기간. endDate값이 없으면 언제까지고 계속 발생
-  startDate           DateTime
-  endDate             DateTime?
+  startDate             DateTime
+  endDate               DateTime?
   // 반복주기
-  cycle               Cycle
+  cycle                 Cycle
   // 반복주기의 배수
-  frequencyMultiplier Int
+  frequencyMultiplier   Int
+  fixtedTransactionTags FixedTransactionTag[]
+}
+
+model FixedTransactionTag {
+  id                 Int              @id @default(autoincrement())
+  fixedTransactionId String
+  // 거래 제거시에는 관련 태그도 삭제해야 한다.
+  fixedTransaction   FixedTransaction @relation(fields: [fixedTransactionId], references: [id], onDelete: Cascade)
+  tagId              String
+  // 태그가 제거되었다는 것은 사용자가 탈퇴되었다는 것
+  tag                Tag              @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
 }
