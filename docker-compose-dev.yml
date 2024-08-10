@@ -30,7 +30,7 @@ services:
     env_file:
       - ./server/.env
     healthcheck:
-      test: ["CMD-SHELL", "wget --spider -q http://localhost:3000/health || exit 1"]
+      test: ["CMD-SHELL", "wget --spider -q http://server:3000/health || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -38,6 +38,7 @@ services:
   client:
     build:
       context: ./client
+      target: development
     volumes:
       - ./client/src:/app/src:rw
       - ./client/package.json:/app/package.json:rw
@@ -48,8 +49,15 @@ services:
       - server
     networks:
       - default
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider -q http://client:3000/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
     env_file:
       - ./client/.env
+
 
 volumes:
   double-entry-book-keeping-data:
