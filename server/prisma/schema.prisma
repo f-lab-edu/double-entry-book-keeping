@@ -24,7 +24,6 @@ model User {
   tags               Tag[]
   fixedTransactions  FixedTransaction[]
   transactions       Transaction[]
-  budgets            Budget[]
   profitTargets      ProfitTarget[]
 }
 
@@ -149,11 +148,9 @@ model TransactionTag {
 
 model Budget {
   id        Int      @id @default(autoincrement())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
   // 예산중심점인 Tag(BUDGET)
-  tagName   String
-  tag       Tag      @relation(fields: [userId, tagName], references: [userId, name])
+  tagId     String
+  tag       Tag      @relation(fields: [tagId], references: [id])
   // 에산 기간 
   // 일반적으로는 월단위로 편성될 것이나, 추후 커스텀을 위해
   startDate DateTime
