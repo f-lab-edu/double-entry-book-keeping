@@ -55,6 +55,9 @@ services:
       timeout: 5s
       retries: 3
       start_period: 5s
+    env_file:
+      - ./client/.env
+
 
 volumes:
   double-entry-book-keeping-data:
