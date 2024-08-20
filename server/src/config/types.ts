@@ -16,7 +16,7 @@ export interface ClientConfig {
   host: string;
 }
 
-export type Environment = 'development' | 'production';
+export type Environment = 'development' | "local" | 'production';
 
 export interface ConfigSchema {
   environment: Environment;
