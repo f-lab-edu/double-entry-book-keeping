@@ -24,7 +24,7 @@ spec:
           image: double-entry-book-keeping-server
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 4000
+            - containerPort: 3000
               name: server
           env:
             - name: NODE_ENV
