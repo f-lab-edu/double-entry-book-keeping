@@ -13,14 +13,12 @@ spec:
     matchLabels:
       app: double-entry-book-keeping
       tier: database
-      component: pod
       environment: local
   template:
     metadata:
       labels:
         app: double-entry-book-keeping
         tier: database
-        component: pod
         environment: local
     spec:
       containers:
