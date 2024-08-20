@@ -15,5 +15,6 @@ spec:
     # 로컬에서는 노드가 하나이므로
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
+  storageClassName: hostpath
   hostPath:
     path: "/mnt/data/mysql"

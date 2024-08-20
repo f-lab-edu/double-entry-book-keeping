@@ -10,6 +10,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   volumeMode: Filesystem
+  storageClassName: hostpath
   resources:
     requests:
       storage: 4Gi
