@@ -4,6 +4,8 @@ metadata:
   name: double-entry-book-keeping-pvc
   labels:
     app: double-entry-book-keeping
+    tier: database
+    environment: local
 spec:
   accessModes:
     - ReadWriteOnce
