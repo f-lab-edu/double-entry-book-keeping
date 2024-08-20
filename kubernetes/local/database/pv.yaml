@@ -10,7 +10,7 @@ spec:
   capacity:
     # 엄밀하게 계산된 값이 아닌 임의값
     storage: 4Gi
-  volumeMode: FileSystem
+  volumeMode: Filesystem
   accessModes:
     # 로컬에서는 노드가 하나이므로
     - ReadWriteOnce
