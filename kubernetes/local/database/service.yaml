@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: double-entry-book-keeping-database-service
+  labels:
+    app: double-entry-book-keeping
+    tier: database
+    environment: local
+spec:
+  ports:
+    - port: 3306
+      targetPort: 3306
+  selector:
+    app: double-entry-book-keeping
+    tier: database
+    environment: local
+  # 일반적인 서비스는 로드 밸런싱이 전제가 되어 있다.
+  # 하지만 로컬의 데이터베이스는 단일 pod이고, 로드밸런싱이 필요 없으므로 헤드리스 서비스로 작성
+  clusterIP: None
