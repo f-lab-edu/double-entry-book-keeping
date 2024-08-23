@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client
+  labels:
+    app: double-entry-book-keeping
+    tier: client
+    environment: local
+spec:
+  selector:
+    matchLabels:
+      app: double-entry-book-keeping
+      tier: client
+      environment: local
+  template:
+    metadata:
+      labels:
+        app: double-entry-book-keeping
+        tier: client
+        environment: local
+    spec:
+      containers:
+        - name: client
+          image: double-entry-book-keeping-client
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+              name: client
+          env:
+            - name: REACT_APP_API_BASE_URL
+              value: "http://localhost:4000"
+            - name: SKIP_DEPENDENCY_CHECK
+              value: "true"

@@ -33,6 +33,8 @@ services:
     networks:
       - private
       - default
+    environment:
+      NODE_ENV: "development"
     secrets:
       - config.yaml
     healthcheck:

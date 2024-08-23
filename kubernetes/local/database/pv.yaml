@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: double-entry-book-keeping-pv
+  labels:
+    app: double-entry-book-keeping
+    tier: database
+    environment: local
+spec:
+  capacity:
+    # 엄밀하게 계산된 값이 아닌 임의값
+    storage: 4Gi
+  volumeMode: Filesystem
+  accessModes:
+    # 로컬에서는 노드가 하나이므로
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: hostpath
+  hostPath:
+    path: "/mnt/data/mysql"
