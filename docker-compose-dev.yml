@@ -4,8 +4,14 @@ services:
       context: ./database
     volumes:
       - double-entry-book-keeping-data:/var/lib/mysql:rw
-    env_file:
-      - .database.env
+    environment:
+      MYSQL_DATABASE: "double-entry-book-keeping"
+      MYSQL_USER: "user"
+      MYSQL_ROOT_DATABASE_FILE: /run/secrets/db_root_password
+      MYSQL_PASSWORD_FILE: /run/secrets/db_password
+    secrets:
+      - db_root_password
+      - db_password
     networks:
       - private
     healthcheck:
@@ -27,8 +33,8 @@ services:
     networks:
       - private
       - default
-    env_file:
-      - ./server/.env
+    secrets:
+      - config.yaml
     healthcheck:
       test: ["CMD-SHELL", "wget --spider -q http://server:3000/health || exit 1"]
       interval: 10s
@@ -56,7 +62,7 @@ services:
       retries: 3
       start_period: 5s
     env_file:
-      - ./client/.env
+      - ./env/development/.client.env
 
 
 volumes:
@@ -64,3 +70,11 @@ volumes:
 
 networks:
   private:
+
+secrets:
+  db_root_password:
+    file: ./secret/development/db_root_password.txt
+  db_password:
+    file: ./secret/development/db_password.txt
+  config.yaml:
+    file: ./secret/development/config.yaml

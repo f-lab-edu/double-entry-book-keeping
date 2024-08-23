@@ -13,10 +13,14 @@ import { AuthService } from './auth.service';
 import { Prisma } from '@prisma/client';
 import { Request, Response } from 'express';
 import { AuthGuard } from './auth.guard';
+import { ConfigService } from 'src/config/config.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService,
+  ) {}
 
   @HttpCode(HttpStatus.CREATED)
   @Post('signup')
@@ -28,9 +32,9 @@ export class AuthController {
 
     response.cookie('jwt', access_token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: this.configService.getEnvironment() === 'production',
       sameSite: 'strict',
-      maxAge: 60 * 1000,
+      maxAge: this.configService.getJwtConfig().cookie.maxAge,
     });
 
     return { message };
@@ -46,9 +50,9 @@ export class AuthController {
 
     response.cookie('jwt', access_token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: this.configService.getEnvironment() === 'production',
       sameSite: 'strict',
-      maxAge: 60 * 1000,
+      maxAge: this.configService.getJwtConfig().cookie.maxAge,
     });
 
     return { message };
