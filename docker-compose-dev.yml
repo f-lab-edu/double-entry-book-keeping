@@ -72,6 +72,7 @@ volumes:
 
 networks:
   private:
+    internal: true
 
 secrets:
   db_root_password:
