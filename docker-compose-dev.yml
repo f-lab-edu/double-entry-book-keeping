@@ -7,7 +7,7 @@ services:
     environment:
       MYSQL_DATABASE: "double-entry-book-keeping"
       MYSQL_USER: "user"
-      MYSQL_ROOT_DATABASE_FILE: /run/secrets/db_root_password
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
       MYSQL_PASSWORD_FILE: /run/secrets/db_password
     secrets:
       - db_root_password
