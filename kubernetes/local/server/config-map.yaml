@@ -10,4 +10,4 @@ data:
       cookie:
         maxAge: 60000
     client:
-      host: "http://localhost:3000"
+      host: "http://double-entry-book-keeping.com"

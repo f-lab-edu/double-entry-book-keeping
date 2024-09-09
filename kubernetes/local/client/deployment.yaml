@@ -28,6 +28,6 @@ spec:
               name: client
           env:
             - name: REACT_APP_API_BASE_URL
-              value: "http://localhost:4000"
+              value: "http://api.double-entry-book-keeping.com"
             - name: SKIP_DEPENDENCY_CHECK
               value: "true"

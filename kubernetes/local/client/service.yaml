@@ -14,4 +14,4 @@ spec:
     app: double-entry-book-keeping
     tier: client
     environment: local
-  type: LoadBalancer
+  type: ClusterIP

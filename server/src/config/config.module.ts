@@ -4,6 +4,7 @@ import { readFileSync } from 'fs';
 import * as yaml from 'js-yaml';
 import { ConfigService } from './config.service';
 import { ConfigSchema } from './types';
+import { merge } from 'lodash';
 
 @Module({
   imports: [
@@ -29,10 +30,11 @@ import { ConfigSchema } from './types';
               const configObject = yaml.load(configContent) as object;
               const secretObject = yaml.load(secretContent) as object;
 
-              const mergedConfig = {
-                ...configObject,
-                ...secretObject,
-              } as ConfigSchema;
+              const mergedConfig = merge(
+                {},
+                configObject,
+                secretObject,
+              ) as ConfigSchema;
 
               process.env.DATABASE_URL = mergedConfig.database.url;
 
