@@ -31,3 +31,21 @@ spec:
               value: "http://api.double-entry-book-keeping.com"
             - name: SKIP_DEPENDENCY_CHECK
               value: "true"
+          startupProbe:
+            httpGet:
+              path: /
+              port: 3000
+            failureThreshold: 6
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            failureThreshold: 1
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            failureThreshold: 1
+            periodSeconds: 30
