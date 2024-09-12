@@ -4,7 +4,7 @@ metadata:
   name: double-entry-book-keeping-server-config
 data:
   config.yaml: |
-    environment: "development"
+    environment: "local"
     jwt:
       expiresIn: "60s"
       cookie:

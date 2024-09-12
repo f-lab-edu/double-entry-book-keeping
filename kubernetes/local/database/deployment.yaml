@@ -24,7 +24,7 @@ spec:
       containers:
         - name: database
           # 파이프라인 구축 후에는 레지스트리의 이미지 참조
-          image: public.ecr.aws/x3j0h5e9/double-entry-book-keeping/database
+          image: double-entry-book-keeping-database
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3306
