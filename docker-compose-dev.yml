@@ -38,7 +38,7 @@ services:
     secrets:
       - config.yaml
     healthcheck:
-      test: ["CMD-SHELL", "wget --spider -q http://server:3000/health || exit 1"]
+      test: ["CMD-SHELL", "wget --spider -q http://server:3000/healthz || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 3

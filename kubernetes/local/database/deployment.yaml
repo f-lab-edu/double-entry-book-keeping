@@ -46,6 +46,18 @@ spec:
               value: /etc/secrets/db_root_password
             - name: MYSQL_PASSWORD_FILE
               value: /etc/secrets/db_password
+          livenessProbe:
+            exec:
+              command:
+                - docker-healthcheck
+            failureThreshold: 1
+            periodSeconds: 10
+          startupProbe:
+            exec:
+              command:
+                - docker-healthcheck
+            failureThreshold: 6
+            periodSeconds: 10
       volumes:
         - name: mysql-data
           persistentVolumeClaim:
