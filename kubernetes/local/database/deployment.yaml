@@ -50,7 +50,13 @@ spec:
             exec:
               command:
                 - docker-healthcheck
-            initialDelaySeconds: 10
+            failureThreshold: 1
+            periodSeconds: 10
+          startupProbe:
+            exec:
+              command:
+                - docker-healthcheck
+            failureThreshold: 6
             periodSeconds: 10
       volumes:
         - name: mysql-data
