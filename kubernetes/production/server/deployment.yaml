@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server
+  labels:
+    app: double-entry-book-keeping
+    tier: server
+    environment: local
+spec:
+  selector:
+    matchLabels:
+      app: double-entry-book-keeping
+      tier: server
+      environment: local
+  template:
+    metadata:
+      labels:
+        app: double-entry-book-keeping
+        tier: server
+        environment: local
+    spec:
+      containers:
+        - name: server
+          image: public.ecr.aws/x3j0h5e9/double-entry-book-keeping/server
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+              name: server
+          env:
+            - name: NODE_ENV
+              value: "local"
+          volumeMounts:
+            - name: server-config
+              mountPath: /etc/config
+            - name: server-secret
+              mountPath: /etc/secret
+      volumes:
+        - name: server-config
+          configMap:
+            name: double-entry-book-keeping-server-config
+            defaultMode: 0400
+        - name: server-secret
+          secret:
+            secretName: double-entry-book-keeping-server-secret
+            defaultMode: 0400

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: double-entry-book-keeping-client-service
+  labels:
+    app: double-entry-book-keeping
+    tier: client
+    environment: production
+spec:
+  ports:
+    - port: 80
+      targetPort: 3000
+  selector:
+    app: double-entry-book-keeping
+    tier: client
+    environment: production
+  type: ClusterIP
