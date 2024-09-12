@@ -22,7 +22,8 @@ import { merge } from 'lodash';
 
               return config;
             }
-            case 'local': {
+            case 'local':
+            case "production": {
               const configPath = '/etc/config/config.yaml';
               const secretPath = '/etc/secret/secret.yaml';
               const configContent = readFileSync(configPath, 'utf8');
@@ -52,4 +53,4 @@ import { merge } from 'lodash';
   providers: [ConfigService],
   exports: [ConfigService],
 })
-export class ConfigModule {}
+export class ConfigModule { }
