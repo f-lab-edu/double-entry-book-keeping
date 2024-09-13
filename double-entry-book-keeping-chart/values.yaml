@@ -35,3 +35,7 @@ server:
 client:
   port: 80
   targetPort: 3000
+  imagePullPolicy: IfNotPresent
+  env:
+    REACT_APP_API_BASE_URL: "http://api.double-entry-book-keeping.com"
+    SKIP_DEPENDENCY_CHECK: "true"

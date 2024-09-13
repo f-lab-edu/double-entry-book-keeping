@@ -5,3 +5,6 @@ database:
 
 server:
   image: double-entry-book-keeping-server
+
+client:
+  image: double-entry-book-keeping-client

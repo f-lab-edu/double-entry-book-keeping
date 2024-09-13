@@ -5,3 +5,6 @@ database:
 
 server:
   image: public.ecr.aws/x3j0h5e9/double-entry-book-keeping/server:latest
+
+client:
+  image: public.ecr.aws/x3j0h5e9/double-entry-book-keeping/client:latest
