@@ -1,0 +1,33 @@
+# prettier-ignore
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: double-entry-book-keeping-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  labels:
+    app: double-entry-book-keeping
+    environment: {{ .Values.environment }}
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: double-entry-book-keeping.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: double-entry-book-keeping-client-service
+                port:
+                  number: {{ .Values.client.port }}
+    - host: api.double-entry-book-keeping.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: double-entry-book-keeping-server-service
+                port:
+                  number: {{ .Values.server.port }}
