@@ -17,9 +17,15 @@ database:
   imagePullPolicy: IfNotPresent
 
 server:
-  jwt:
-    expiresIn: "60s"
-    cookie:
-      maxAge: 60000
-  client:
-    host: "http://double-entry-book-keeping.com"
+  configMap:
+    jwt:
+      expiresIn: "60s"
+      cookie:
+        maxAge: 60000
+    client:
+      host: "http://double-entry-book-keeping.com"
+  secret:
+    database:
+      url: "mysql://user:password@double-entry-book-keeping-database-service.default.svc.cluster.local:3306/double-entry-book-keeping"
+    jwt:
+      secret: "temp"

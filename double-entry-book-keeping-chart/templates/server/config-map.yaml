@@ -10,8 +10,8 @@ data:
   config.yaml: |
     environment: {{ .Values.environment }}
     jwt:
-      expiresIn: {{ .Values.server.jwt.expiresIn | quote}}
+      expiresIn: {{ .Values.server.configMap.jwt.expiresIn | quote}}
       cookie:
-        maxAge: {{ .Values.server.jwt.cookie.maxAge }}
+        maxAge: {{ .Values.server.configMap.jwt.cookie.maxAge }}
     client:
-      host: {{ .Values.server.client.host }}
+      host: {{ .Values.server.configMap.client.host }}
