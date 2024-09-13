@@ -15,3 +15,11 @@ database:
   port: 3306
   targetPort: 3306
   imagePullPolicy: IfNotPresent
+
+server:
+  jwt:
+    expiresIn: "60s"
+    cookie:
+      maxAge: 60000
+  client:
+    host: "http://double-entry-book-keeping.com"
