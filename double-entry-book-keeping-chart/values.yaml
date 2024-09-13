@@ -31,3 +31,7 @@ server:
       secret: "temp"
   port: 80
   targetPort: 3000
+
+client:
+  port: 80
+  targetPort: 3000

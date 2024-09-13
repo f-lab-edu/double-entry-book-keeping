@@ -1,0 +1,18 @@
+# prettier-ignore
+apiVersion: v1
+kind: Service
+metadata:
+  name: double-entry-book-keeping-client-service
+  labels:
+    app: double-entry-book-keeping
+    tier: client
+    environment: {{ .Values.environment }}
+spec:
+  ports:
+    - port: {{ .Values.client.port }}
+      targetPort: {{ .Values.client.targetPort }}
+  selector:
+    app: double-entry-book-keeping
+    tier: client
+    environment: {{ .Values.environment }}
+  type: ClusterIP
