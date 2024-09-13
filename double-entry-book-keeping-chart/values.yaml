@@ -29,3 +29,5 @@ server:
       url: "mysql://user:password@double-entry-book-keeping-database-service.default.svc.cluster.local:3306/double-entry-book-keeping"
     jwt:
       secret: "temp"
+  port: 80
+  targetPort: 3000
