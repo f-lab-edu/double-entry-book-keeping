@@ -1,2 +1,7 @@
 database:
   storage: 4Gi
+  # 환경별로 달라지는게 마땅한 값이지만, 일단 지금은 레포지토리가 공개되어 있으므로
+  # 추후 운영 환경 비밀값을 어떻게 운용할지 정해지면 수정
+  secret:
+    db_root_password: password
+    db_password: password
