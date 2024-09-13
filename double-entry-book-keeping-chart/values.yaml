@@ -1,6 +1,2 @@
 database:
-  persistentVolume:
-    spec:
-      capacity:
-        # 엄밀하게 계산된 값이 아닌 임의값
-        storage: 4Gi
+  storage: 4Gi

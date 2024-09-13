@@ -1,22 +1,20 @@
 # prettier-ignore
 apiVersion: v1
-kind: PersistentVolume
+kind: PersistentVolumeClaim
 metadata:
-  name: double-entry-book-keeping-pv
+  name: double-entry-book-keeping-pvc
   labels:
     app: double-entry-book-keeping
     tier: database
     environment: {{ .Values.environment }}
 spec:
-  capacity:
-    storage: {{ .Values.database.storage }}
-  volumeMode: Filesystem
   accessModes:
     # 로컬에서는 노드가 하나
     # 운영 환경에서도 편의를 위해 노드를 1개만 둘 것을 가정
     # 아마 운영 환경에서는 데이터베이스는 매니지드 서비스를 사용하는게 바람직할 것
     - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
+  volumeMode: Filesystem
   storageClassName: hostpath
-  hostPath:
-    path: "/mnt/data/mysql"
+  resources:
+    requests:
+      storage: {{ .Values.database.storage }}
