@@ -2,3 +2,6 @@ environment: production
 
 database:
   image: public.ecr.aws/x3j0h5e9/double-entry-book-keeping/database:latest
+
+server:
+  image: public.ecr.aws/x3j0h5e9/double-entry-book-keeping/server:latest

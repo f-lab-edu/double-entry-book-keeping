@@ -2,3 +2,6 @@ environment: local
 
 database:
   image: double-entry-book-keeping-database
+
+server:
+  image: double-entry-book-keeping-server
