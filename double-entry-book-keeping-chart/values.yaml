@@ -5,3 +5,5 @@ database:
   secret:
     db_root_password: password
     db_password: password
+  port: 3306
+  targetPort: 3306
