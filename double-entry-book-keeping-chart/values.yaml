@@ -31,6 +31,7 @@ server:
       secret: "temp"
   port: 80
   targetPort: 3000
+  imagePullPolicy: IfNotPresent
 
 client:
   port: 80
