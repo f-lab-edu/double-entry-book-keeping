@@ -1,3 +1,4 @@
+# prettier-ignore
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -6,7 +7,7 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
   labels:
     app: double-entry-book-keeping
-    environment: local
+    environment: {{ .Values.environment }}
 spec:
   ingressClassName: nginx
   rules:
@@ -19,7 +20,7 @@ spec:
               service:
                 name: double-entry-book-keeping-client-service
                 port:
-                  number: 80
+                  number: {{ .Values.client.port }}
     - host: api.double-entry-book-keeping.com
       http:
         paths:
@@ -29,4 +30,4 @@ spec:
               service:
                 name: double-entry-book-keeping-server-service
                 port:
-                  number: 80
+                  number: {{ .Values.server.port }}

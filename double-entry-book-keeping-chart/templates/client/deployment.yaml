@@ -1,3 +1,4 @@
+# prettier-ignore
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -5,47 +6,47 @@ metadata:
   labels:
     app: double-entry-book-keeping
     tier: client
-    environment: local
+    environment: {{ .Values.environment }}
 spec:
   selector:
     matchLabels:
       app: double-entry-book-keeping
       tier: client
-      environment: local
+      environment: {{ .Values.environment }}
   template:
     metadata:
       labels:
         app: double-entry-book-keeping
         tier: client
-        environment: local
+        environment: {{ .Values.environment }}
     spec:
       containers:
         - name: client
-          image: double-entry-book-keeping-client
-          imagePullPolicy: IfNotPresent
+          image: {{ .Values.client.image }}
+          imagePullPolicy: {{ .Values.client.imagePullPolicy }}
           ports:
-            - containerPort: 3000
+            - containerPort: {{ .Values.client.targetPort }}
               name: client
           env:
             - name: REACT_APP_API_BASE_URL
-              value: "http://api.double-entry-book-keeping.com"
+              value: {{ .Values.client.env.REACT_APP_API_BASE_URL }}
             - name: SKIP_DEPENDENCY_CHECK
-              value: "true"
+              value: {{ .Values.client.env.SKIP_DEPENDENCY_CHECK | quote }}
           startupProbe:
             httpGet:
               path: /
-              port: 3000
+              port: {{ .Values.client.targetPort }}
             failureThreshold: 6
             periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /
-              port: 3000
+              port: {{ .Values.client.targetPort }}
             failureThreshold: 1
             periodSeconds: 10
           livenessProbe:
             httpGet:
               path: /
-              port: 3000
+              port: {{ .Values.client.targetPort }}
             failureThreshold: 1
             periodSeconds: 30

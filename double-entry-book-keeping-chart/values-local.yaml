@@ -1,0 +1,10 @@
+environment: local
+
+database:
+  image: double-entry-book-keeping-database
+
+server:
+  image: double-entry-book-keeping-server
+
+client:
+  image: double-entry-book-keeping-client

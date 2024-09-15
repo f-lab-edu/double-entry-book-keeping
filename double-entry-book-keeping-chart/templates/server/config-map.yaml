@@ -1,0 +1,17 @@
+# prettier-ignore
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: double-entry-book-keeping-server-config
+  labels:
+    app: double-entry-book-keeping
+    environment: {{ .Values.environment }}
+data:
+  config.yaml: |
+    environment: {{ .Values.environment }}
+    jwt:
+      expiresIn: {{ .Values.server.configMap.jwt.expiresIn | quote}}
+      cookie:
+        maxAge: {{ .Values.server.configMap.jwt.cookie.maxAge }}
+    client:
+      host: {{ .Values.server.configMap.client.host }}

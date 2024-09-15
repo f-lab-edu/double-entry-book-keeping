@@ -1,3 +1,4 @@
+# prettier-ignore
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -5,7 +6,7 @@ metadata:
   labels:
     app: double-entry-book-keeping
     tier: database
-    environment: local
+    environment: {{ .Values.environment }}
 spec:
   # 레플리카 개수는 기본적으로 1이지만, 데이터베이스 pod이 오직 1개임을 보다 명시적으로 설정
   replicas: 1
@@ -13,21 +14,20 @@ spec:
     matchLabels:
       app: double-entry-book-keeping
       tier: database
-      environment: local
+      environment: {{ .Values.environment }}
   template:
     metadata:
       labels:
         app: double-entry-book-keeping
         tier: database
-        environment: local
+        environment: {{ .Values.environment }}
     spec:
       containers:
         - name: database
-          # 파이프라인 구축 후에는 레지스트리의 이미지 참조
-          image: double-entry-book-keeping-database
-          imagePullPolicy: IfNotPresent
+          image: {{ .Values.database.image }}
+          imagePullPolicy: {{ .Values.database.imagePullPolicy }}
           ports:
-            - containerPort: 3306
+            - containerPort: {{ .Values.database.port }}
               name: mysql
           volumeMounts:
             - name: mysql-data
@@ -39,13 +39,13 @@ spec:
               readOnly: true
           env:
             - name: MYSQL_DATABASE
-              value: "double-entry-book-keeping"
+              value: {{ .Values.database.env.MYSQL_DATABASE }}
             - name: MYSQL_USER
-              value: "user"
+              value: {{ .Values.database.env.MYSQL_USER }}
             - name: MYSQL_ROOT_PASSWORD_FILE
-              value: /etc/secrets/db_root_password
+              value: {{ .Values.database.env.MYSQL_ROOT_PASSWORD_FILE }}
             - name: MYSQL_PASSWORD_FILE
-              value: /etc/secrets/db_password
+              value: {{ .Values.database.env.MYSQL_PASSWORD_FILE }}
           livenessProbe:
             exec:
               command:

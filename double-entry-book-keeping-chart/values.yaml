@@ -1,0 +1,42 @@
+database:
+  storage: 4Gi
+
+  # 환경별로 달라지는게 마땅한 값이지만, 일단 지금은 레포지토리가 공개되어 있으므로
+  # 추후 운영 환경 비밀값을 어떻게 운용할지 정해지면 수정
+  secret:
+    db_root_password: password
+    db_password: password
+  env:
+    MYSQL_DATABASE: double-entry-book-keeping
+    MYSQL_USER: user
+    MYSQL_ROOT_PASSWORD_FILE: /etc/secrets/db_root_password
+    MYSQL_PASSWORD_FILE: /etc/secrets/db_password
+
+  port: 3306
+  targetPort: 3306
+  imagePullPolicy: IfNotPresent
+
+server:
+  configMap:
+    jwt:
+      expiresIn: "60s"
+      cookie:
+        maxAge: 60000
+    client:
+      host: "http://double-entry-book-keeping.com"
+  secret:
+    database:
+      url: "mysql://user:password@double-entry-book-keeping-database-service.default.svc.cluster.local:3306/double-entry-book-keeping"
+    jwt:
+      secret: "temp"
+  port: 80
+  targetPort: 3000
+  imagePullPolicy: IfNotPresent
+
+client:
+  port: 80
+  targetPort: 3000
+  imagePullPolicy: IfNotPresent
+  env:
+    REACT_APP_API_BASE_URL: "http://api.double-entry-book-keeping.com"
+    SKIP_DEPENDENCY_CHECK: "true"

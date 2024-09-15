@@ -1,3 +1,4 @@
+# prettier-ignore
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -5,29 +6,30 @@ metadata:
   labels:
     app: double-entry-book-keeping
     tier: server
-    environment: local
+    environment: {{ .Values.environment }}
 spec:
   selector:
     matchLabels:
       app: double-entry-book-keeping
       tier: server
-      environment: local
+      environment: {{ .Values.environment }}
   template:
     metadata:
       labels:
         app: double-entry-book-keeping
         tier: server
-        environment: local
+        environment: {{ .Values.environment }}
     spec:
       containers:
         - name: server
-          image: public.ecr.aws/x3j0h5e9/double-entry-book-keeping/server:latest
+          image: {{ .Values.server.image }}
+          imagePullPolicy: {{ .Values.server.imagePullPolicy }}
           ports:
-            - containerPort: 3000
+            - containerPort: {{ .Values.server.targetPort }}
               name: server
           env:
             - name: NODE_ENV
-              value: "local"
+              value: {{ .Values.environment | quote }}
           volumeMounts:
             - name: server-config
               mountPath: /etc/config
@@ -36,18 +38,18 @@ spec:
           livenessProbe:
             httpGet:
               path: /healthz
-              port: 3000
+              port: {{ .Values.server.targetPort }}
             failureThreshold: 1
             periodSeconds: 15
           readinessProbe:
             httpGet:
               path: /healthz
-              port: 3000
+              port: {{ .Values.server.targetPort }}
             periodSeconds: 5
           startupProbe:
             httpGet:
               path: /healthz
-              port: 3000
+              port: {{ .Values.server.targetPort }}
             failureThreshold: 6
             periodSeconds: 5
       volumes:
