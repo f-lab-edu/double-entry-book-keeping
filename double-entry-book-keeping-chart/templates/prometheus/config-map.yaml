@@ -1,0 +1,39 @@
+# prettier-ignore
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  labels:
+    app: double-entry-book-keeping
+    tier: prometheus
+    environment: {{ .Values.environment }}
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+
+    scrape_configs:
+      - job_name: 'kubernetes-nodes-cadvisor'
+        # sd는 service discorvery
+        kubernetes_sd_configs:
+          - role: node
+        scheme: https
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          # 일단 테스트 목적으로 TLS 인증서 검증 스킵
+          insecure_skip_verify: true
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        relabel_configs:
+            # 쿠버네티스 노드의 메타데이터 라벨을 프로메테우스 메트릭에 적용
+          - action: labelmap
+            # 쿠버네티스 노드의 라벨 중 메타데이터에 해당하는 항목을 찾아 메트릭에 추가
+            regex: __meta_kubernetes_node_label_(.+)
+          - target_label: __metrics_path__
+            replacement: /metrics/cadvisor
+        metric_relabel_configs:
+            # 수집한 메트릭 중에서 메트릭 이름을 기준으로 필터링
+          - source_labels: [__name__]
+            # 메트릭 이름 중에서 container_로 시작하는 것만 필터링
+            regex: 'container_(.*)'
+            # 매칭된 메트릭만 유지하고 나머지는 버린다.
+            action: keep
