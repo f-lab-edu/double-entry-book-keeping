@@ -91,32 +91,7 @@ data:
                 ]
               }
             },
-            "overrides": [
-              {
-                "__systemRef": "hideSeriesFrom",
-                "matcher": {
-                  "id": "byNames",
-                  "options": {
-                    "mode": "exclude",
-                    "names": [
-                      "{beta_kubernetes_io_arch=\"amd64\", beta_kubernetes_io_os=\"linux\", device=\"/dev/vda\", id=\"/kubepods/kubepods/besteffort/podbfaae3be-6680-4c76-99a7-7b86401d989a\", instance=\"docker-desktop\", job=\"kubernetes-nodes-cadvisor\", kubernetes_io_arch=\"amd64\", kubernetes_io_hostname=\"docker-desktop\", kubernetes_io_os=\"linux\", namespace=\"default\", pod=\"client-59cc98bc96-x7q4r\"}"
-                    ],
-                    "prefix": "All except:",
-                    "readOnly": true
-                  }
-                },
-                "properties": [
-                  {
-                    "id": "custom.hideFrom",
-                    "value": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": true
-                    }
-                  }
-                ]
-              }
-            ]
+            "overrides": []
           },
           "gridPos": {
             "h": 8,
@@ -256,24 +231,24 @@ data:
               "sort": "none"
             }
           },
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "PBFA97CFB590B2093"
-              },
-              "disableTextWrap": false,
-              "editorMode": "builder",
-              "expr": "container_memory_usage_bytes{namespace=\"default\"}",
-              "fullMetaSearch": false,
-              "includeNullMetadata": true,
-              "instant": false,
-              "legendFormat": "__auto",
-              "range": true,
-              "refId": "memory",
-              "useBackend": false
-            }
-          ],
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PBFA97CFB590B2093"
+                },
+                "disableTextWrap": false,
+                "editorMode": "builder",
+                "expr": "container_memory_usage_bytes{namespace=\"default\"}/1024/1024",
+                "fullMetaSearch": false,
+                "includeNullMetadata": true,
+                "instant": false,
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "memory",
+                "useBackend": false
+              }
+            ],
           "title": "memory",
           "type": "timeseries"
         },
@@ -365,7 +340,7 @@ data:
               },
               "disableTextWrap": false,
               "editorMode": "builder",
-              "expr": "rate(container_cpu_usage_seconds_total{namespace=\"default\"}[5m])",
+              "expr": "rate(container_cpu_usage_seconds_total{namespace=\"default\"}[5m])*1000",
               "fullMetaSearch": false,
               "includeNullMetadata": false,
               "instant": false,
@@ -392,6 +367,6 @@ data:
       "timezone": "browser",
       "title": "New dashboard",
       "uid": "cdy6grlm0nb40c",
-      "version": 8,
+      "version": 1,
       "weekStart": ""
     }
