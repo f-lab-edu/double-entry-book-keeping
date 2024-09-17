@@ -1,0 +1,13 @@
+# 이미지 빌드용 파일
+services:
+  database: 
+    build:
+      context: ./database
+  server:
+    build:
+      context: ./server
+      target: production
+  client:
+    build:
+      context: ./client
+      target: production
