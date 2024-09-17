@@ -58,6 +58,13 @@ spec:
                 - docker-healthcheck
             failureThreshold: 6
             periodSeconds: 10
+          resources:
+            requests:
+              cpu: {{ .Values.database.resources.requests.cpu }}
+              memory: {{ .Values.database.resources.requests.memory }}
+            limits: 
+              cpu: {{ .Values.database.resources.limits.cpu }}
+              memory: {{ .Values.database.resources.limits.memory }}
       volumes:
         - name: mysql-data
           persistentVolumeClaim:

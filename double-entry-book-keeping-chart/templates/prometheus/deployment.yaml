@@ -33,6 +33,13 @@ spec:
               mountPath: /etc/prometheus/
             - name: prometheus-data-volume
               mountPath: /prometheus
+          resources:
+            requests:
+              cpu: {{ .Values.prometheus.resources.requests.cpu }}
+              memory: {{ .Values.prometheus.resources.requests.memory }}
+            limits: 
+              cpu: {{ .Values.prometheus.resources.limits.cpu }}
+              memory: {{ .Values.prometheus.resources.limits.memory }}
       volumes:
         - name: prometheus-config
           configMap:

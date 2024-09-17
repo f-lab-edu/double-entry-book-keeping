@@ -50,3 +50,10 @@ spec:
               port: {{ .Values.client.targetPort }}
             failureThreshold: 1
             periodSeconds: 30
+          resources:
+            requests:
+              cpu: {{ .Values.client.resources.requests.cpu }}
+              memory: {{ .Values.client.resources.requests.memory }}
+            limits: 
+              cpu: {{ .Values.client.resources.limits.cpu }}
+              memory: {{ .Values.client.resources.limits.memory }}

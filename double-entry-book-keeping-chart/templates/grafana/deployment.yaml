@@ -37,6 +37,13 @@ spec:
               mountPath: /var/lib/grafana/dashboards
             - name: grafana-provisioning
               mountPath: /etc/grafana/provisioning/dashboards
+          resources:
+            requests:
+              cpu: {{ .Values.grafana.resources.requests.cpu }}
+              memory: {{ .Values.grafana.resources.requests.memory }}
+            limits: 
+              cpu: {{ .Values.grafana.resources.limits.cpu }}
+              memory: {{ .Values.grafana.resources.limits.memory }}
       volumes:
         - name: grafana-datasources
           configMap:

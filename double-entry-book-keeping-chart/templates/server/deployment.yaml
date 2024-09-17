@@ -51,7 +51,14 @@ spec:
               path: /healthz
               port: {{ .Values.server.targetPort }}
             failureThreshold: 6
-            periodSeconds: 5
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: {{ .Values.server.resources.requests.cpu }}
+              memory: {{ .Values.server.resources.requests.memory }}
+            limits: 
+              cpu: {{ .Values.server.resources.limits.cpu }}
+              memory: {{ .Values.server.resources.limits.memory }}
       volumes:
         - name: server-config
           configMap:
