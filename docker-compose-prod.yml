@@ -11,3 +11,5 @@ services:
     build:
       context: ./client
       target: production
+      args:
+        - REACT_APP_API_BASE_URL=http://api.double-entry-book-keeping.com

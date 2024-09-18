@@ -1,0 +1,28 @@
+# prettier-ignore
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: double-entry-book-keeping-client-config
+  labels:
+    app: double-entry-book-keeping
+    tier: client
+    environment: {{ .Values.environment }}
+data:
+  client.conf: |
+    server {
+        listen 80;
+        listen [::]:80;
+
+        root /usr/share/nginx/html;
+        index index.html index.htm index.nginx-debian.html;
+
+        server_name double-entry-book-keeping.com;
+
+        location / {
+          try_files $uri /index.html;
+        }
+
+        location /static/ {
+          alias /usr/share/nginx/html/static/;
+        }
+    }

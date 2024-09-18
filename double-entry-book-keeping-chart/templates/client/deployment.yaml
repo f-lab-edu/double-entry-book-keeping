@@ -27,11 +27,6 @@ spec:
           ports:
             - containerPort: {{ .Values.client.targetPort }}
               name: client
-          env:
-            - name: REACT_APP_API_BASE_URL
-              value: {{ .Values.client.env.REACT_APP_API_BASE_URL }}
-            - name: SKIP_DEPENDENCY_CHECK
-              value: {{ .Values.client.env.SKIP_DEPENDENCY_CHECK | quote }}
           startupProbe:
             httpGet:
               path: /
@@ -57,3 +52,11 @@ spec:
             limits: 
               cpu: {{ .Values.client.resources.limits.cpu }}
               memory: {{ .Values.client.resources.limits.memory }}
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: double-entry-book-keeping-client-config
+            defaultMode: 0400
