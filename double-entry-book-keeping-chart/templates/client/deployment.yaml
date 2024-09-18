@@ -31,19 +31,12 @@ spec:
             httpGet:
               path: /
               port: {{ .Values.client.targetPort }}
-            failureThreshold: 6
-            periodSeconds: 10
+            failureThreshold: 4
+            periodSeconds: 15
           readinessProbe:
             httpGet:
               path: /
               port: {{ .Values.client.targetPort }}
-            failureThreshold: 1
-            periodSeconds: 10
-          livenessProbe:
-            httpGet:
-              path: /
-              port: {{ .Values.client.targetPort }}
-            failureThreshold: 1
             periodSeconds: 30
           resources:
             requests:

@@ -3,6 +3,10 @@ services:
   database: 
     build:
       context: ./database
+  prisma:
+    build:
+      context: ./server
+      target: builder
   server:
     build:
       context: ./server
