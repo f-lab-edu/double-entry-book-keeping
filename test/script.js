@@ -1,12 +1,16 @@
 import http from "k6/http";
-import { sleep } from "k6";
+import { sleep, check } from "k6";
 
 export const options = {
   // A number specifying the number of VUs to run concurrently.
-  vus: 10,
+  // 가상의 유저가 50명이라고 가정
+  vus: 50,
   // A string specifying the total duration of the test run.
-  duration: "30s",
-
+  // 테스트 시간
+  duration: "1m",
+  // thresholds: {
+  //   http_req_duration: ["p(95)<500"],
+  // },
   // The following section contains configuration options for execution of this
   // test script in Grafana Cloud.
   //
@@ -54,6 +58,64 @@ export const options = {
 // about authoring k6 scripts.
 //
 export default function () {
-  http.get("https://test.k6.io");
+  let headers = {
+    // Accept: "application/json, text/plain, */*",
+    // "Accept-Language": "en-US,en;q=0.9",
+    Connection: "keep-alive",
+    "Content-Type": "application/json",
+    // DNT: "1", // Do Not Track
+    Origin: "http://double-entry-book-keeping.com", // CORS 헤더
+    // Referer: "http://double-entry-book-keeping.com/",
+  };
+
+  let loginRes = http.post(
+    "http://api.double-entry-book-keeping.com/auth/signin",
+    JSON.stringify({
+      id: "user",
+      password: "password",
+    }),
+    {
+      headers,
+    }
+  );
+
+  check(loginRes, {
+    "로그인 성공": (r) => r.status === 200,
+  });
+
+  let cookies = loginRes.cookies;
+  let jwtCookie = cookies["jwt"];
+
+  check(jwtCookie, {
+    "JWT cookie is set": (c) => c && c.length > 0,
+  });
+
+  let createAccountRes = http.post(
+    "http://api.double-entry-book-keeping.com/account",
+    JSON.stringify({
+      name: `account_${__VU}_${__ITER}`,
+      // user 계정의 자산 계정과목 id
+      parentId: "24560f3e-f127-4c28-86ff-49b9be257f9e",
+    }),
+    {
+      headers,
+    }
+  );
+
+  // 상태코드 및 응답 본문 출력
+  // console.log("Status: " + createAccountRes.status);
+  // console.log("Response body: " + createAccountRes.body);
+
+  check(createAccountRes, {
+    "계정과목을 성공적으로 생성하였다.": (r) => r.status === 201,
+  });
+
   sleep(1);
 }
+
+// export function handleSummary(data) {
+//   return {
+//     stdout: JSON.stringify(data), // 콘솔로 요약 출력
+//     "http://localhost:30090/api/v1/write": data, // Prometheus로 데이터 전송
+//   };
+// }
