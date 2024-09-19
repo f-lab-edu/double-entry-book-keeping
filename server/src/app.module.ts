@@ -7,7 +7,7 @@ import { ConfigModule } from './config/config.module';
 import { AccountModule } from './account/account.module';
 
 @Module({
-  imports: [ConfigModule, HealthModule, AuthModule, AccountModule],
+  imports: [ConfigModule, HealthModule, AccountModule],
   controllers: [AppController],
   providers: [AppService],
 })

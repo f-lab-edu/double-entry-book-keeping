@@ -7,7 +7,7 @@ import { AuthModule } from 'src/auth/auth.module';
 import { ConfigModule } from 'src/config/config.module';
 
 @Module({
-  imports: [PrismaModule, DateTimeModule, AuthModule, ConfigModule],
+  imports: [PrismaModule, DateTimeModule, ConfigModule, AuthModule],
   controllers: [AccountController],
   providers: [AccountService],
   exports: [AccountService],

@@ -7,7 +7,6 @@ import {
   Param,
   Patch,
   Post,
-  Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -26,6 +25,7 @@ export class AccountController {
     @Request() req,
     @Body() body: Omit<CreateAccountInput, 'userId'>,
   ) {
+    console.log('body', body);
     return this.accountService.create({
       userId: req.user.sub,
       ...body,
