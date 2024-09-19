@@ -26,6 +26,10 @@ spec:
           image: prom/prometheus:v2.54.1
           args:
             - "--config.file=/etc/prometheus/prometheus.yml"
+            # https://prometheus.io/docs/prometheus/latest/feature_flags/#remote-write-receiver
+            - "--enable-feature=remote-write-receiver"
+            # https://prometheus.io/docs/prometheus/latest/feature_flags/#native-histograms
+            - "--enable-feature=native-histograms"
           ports:
             - containerPort: 9090
           volumeMounts:
