@@ -15,6 +15,13 @@ database:
   port: 3306
   targetPort: 3306
   imagePullPolicy: IfNotPresent
+  resources:
+    requests:
+      cpu: 50m
+      memory: 512Mi
+    limits:
+      cpu: 100m
+      memory: 1024Mi
 
 server:
   configMap:
@@ -32,11 +39,40 @@ server:
   port: 80
   targetPort: 3000
   imagePullPolicy: IfNotPresent
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 100m
+      memory: 256Mi
 
 client:
   port: 80
-  targetPort: 3000
+  targetPort: 80
   imagePullPolicy: IfNotPresent
-  env:
-    REACT_APP_API_BASE_URL: "http://api.double-entry-book-keeping.com"
-    SKIP_DEPENDENCY_CHECK: "true"
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 100m
+      memory: 256Mi
+
+grafana:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 100m
+      memory: 256Mi
+
+prometheus:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 100m
+      memory: 256Mi

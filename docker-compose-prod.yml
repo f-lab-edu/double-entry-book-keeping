@@ -1,0 +1,19 @@
+# 이미지 빌드용 파일
+services:
+  database: 
+    build:
+      context: ./database
+  prisma:
+    build:
+      context: ./server
+      target: builder
+  server:
+    build:
+      context: ./server
+      target: production
+  client:
+    build:
+      context: ./client
+      target: production
+      args:
+        - REACT_APP_API_BASE_URL=http://api.double-entry-book-keeping.com

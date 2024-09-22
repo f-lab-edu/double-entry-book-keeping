@@ -35,23 +35,32 @@ spec:
               mountPath: /etc/config
             - name: server-secret
               mountPath: /etc/secret
-          livenessProbe:
-            httpGet:
-              path: /healthz
-              port: {{ .Values.server.targetPort }}
-            failureThreshold: 1
-            periodSeconds: 15
           readinessProbe:
             httpGet:
               path: /healthz
               port: {{ .Values.server.targetPort }}
-            periodSeconds: 5
+            periodSeconds: 30
           startupProbe:
             httpGet:
               path: /healthz
               port: {{ .Values.server.targetPort }}
-            failureThreshold: 6
-            periodSeconds: 5
+            failureThreshold: 4
+            periodSeconds: 15
+          resources:
+            requests:
+              cpu: {{ .Values.server.resources.requests.cpu }}
+              memory: {{ .Values.server.resources.requests.memory }}
+            limits: 
+              cpu: {{ .Values.server.resources.limits.cpu }}
+              memory: {{ .Values.server.resources.limits.memory }}
+      initContainers:
+        - name: migrate
+          image: {{ .Values.server.prismaImage }}
+          imagePullPolicy: {{ .Values.server.imagePullPolicy }}
+          command: ["npx", "prisma", "db", "push"]
+          env:
+            - name: DATABASE_URL
+              value: {{ .Values.server.secret.database.url }}
       volumes:
         - name: server-config
           configMap:

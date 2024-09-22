@@ -5,6 +5,7 @@ database:
 
 server:
   image: double-entry-book-keeping-server
+  prismaImage: double-entry-book-keeping-prisma
 
 client:
   image: double-entry-book-keeping-client

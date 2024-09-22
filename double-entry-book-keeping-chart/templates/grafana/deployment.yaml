@@ -1,0 +1,56 @@
+# prettier-ignore
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+  labels:
+    app: double-entry-book-keeping
+    tier: grafana
+    environment: {{ .Values.environment }}
+spec:
+  selector:
+    matchLabels:
+      app: double-entry-book-keeping
+      tier: grafana
+      environment: {{ .Values.environment }}
+  template:
+    metadata:
+      labels:
+        app: double-entry-book-keeping
+        tier: grafana
+        environment: {{ .Values.environment }}
+    spec:
+      containers:
+        - name: grafana
+          image: grafana/grafana:11.2.0
+          ports:
+            - containerPort: 3000
+          env:
+            - name: GF_SECURITY_ADMIN_PASSWORD
+              value: admin  # 관리자 비밀번호 설정
+            - name: GF_PATHS_PROVISIONING
+              value: /etc/grafana/provisioning
+          volumeMounts:
+            - name: grafana-datasources
+              mountPath: /etc/grafana/provisioning/datasources
+            - name: grafana-dashboards
+              mountPath: /var/lib/grafana/dashboards
+            - name: grafana-provisioning
+              mountPath: /etc/grafana/provisioning/dashboards
+          resources:
+            requests:
+              cpu: {{ .Values.grafana.resources.requests.cpu }}
+              memory: {{ .Values.grafana.resources.requests.memory }}
+            limits: 
+              cpu: {{ .Values.grafana.resources.limits.cpu }}
+              memory: {{ .Values.grafana.resources.limits.memory }}
+      volumes:
+        - name: grafana-datasources
+          configMap:
+            name: grafana-datasources
+        - name: grafana-dashboards
+          configMap:
+            name: grafana-dashboards
+        - name: grafana-provisioning
+          configMap:
+            name: grafana-dashboard-providers

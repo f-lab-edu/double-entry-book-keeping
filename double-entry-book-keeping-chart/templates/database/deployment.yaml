@@ -46,18 +46,24 @@ spec:
               value: {{ .Values.database.env.MYSQL_ROOT_PASSWORD_FILE }}
             - name: MYSQL_PASSWORD_FILE
               value: {{ .Values.database.env.MYSQL_PASSWORD_FILE }}
-          livenessProbe:
+          readinessProbe:
             exec:
               command:
                 - docker-healthcheck
-            failureThreshold: 1
-            periodSeconds: 10
+            periodSeconds: 30
           startupProbe:
             exec:
               command:
                 - docker-healthcheck
-            failureThreshold: 6
-            periodSeconds: 10
+            failureThreshold: 4
+            periodSeconds: 15
+          resources:
+            requests:
+              cpu: {{ .Values.database.resources.requests.cpu }}
+              memory: {{ .Values.database.resources.requests.memory }}
+            limits: 
+              cpu: {{ .Values.database.resources.limits.cpu }}
+              memory: {{ .Values.database.resources.limits.memory }}
       volumes:
         - name: mysql-data
           persistentVolumeClaim:

@@ -18,6 +18,7 @@ export class AccountService {
   ) {}
 
   async create(createAccountInput: CreateAccountInput) {
+    console.log('createAccountInput', createAccountInput);
     const { userId, name, parentId } = createAccountInput;
 
     const account = await this.readUnique({

@@ -1,0 +1,29 @@
+# prettier-ignore
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-providers
+  labels:
+    app: double-entry-book-keeping
+    tier: grafana
+    environment: {{ .Values.environment }}
+data:
+  dashboards.yaml: |
+    apiVersion: 1
+    providers:
+      - name: 'default'
+        # 조직 id인데, 단일 조직에서는 보통 1만 사용
+        orgId: 1
+        # 대시보드를 저장할 폴더를 지정하는 것으로, 빈 문자열을 사용하면 기본 폴더에 저장
+        folder: ''
+        # 대시보드를 파일에서 불러올 것임을 나타낸다.
+        type: file
+        # 대시보드 삭제를 막지 않는다.
+        disableDeletion: false
+        # 대시보드를 수정할 수 있다.
+        editable: true
+        # 30초마다 대시보드 변경 사항 확인
+        updateIntervalSeconds: 30  
+        # 대시보드를 마운트한 경로
+        options:
+          path: /var/lib/grafana/dashboards

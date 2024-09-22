@@ -17,6 +17,8 @@ CMD if [ "$SKIP_DEPENDENCY_CHECK" = "true" ]; then echo "Skipping dependency che
 
 FROM base AS builder
 
+ARG REACT_APP_API_BASE_URL
+
 RUN npm run build
 
 FROM nginx:alpine AS production
