@@ -20,3 +20,6 @@ spec:
   storageClassName: hostpath
   hostPath:
     path: "/var/lib/mysql-data"
+  claimRef:
+    name: double-entry-book-keeping-pvc
+    namespace: default

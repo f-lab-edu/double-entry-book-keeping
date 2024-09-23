@@ -8,6 +8,7 @@ metadata:
     tier: database
     environment: {{ .Values.environment }}
 spec:
+  volumeName: double-entry-book-keeping-pv
   accessModes:
     # 로컬에서는 노드가 하나
     # 운영 환경에서도 편의를 위해 노드를 1개만 둘 것을 가정
