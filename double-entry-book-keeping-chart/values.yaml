@@ -22,6 +22,9 @@ database:
     limits:
       cpu: 100m
       memory: 1024Mi
+  persistentVolume:
+    spec:
+      storageClassName: local-storage
 
 server:
   configMap:

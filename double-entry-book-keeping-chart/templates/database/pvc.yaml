@@ -15,7 +15,7 @@ spec:
     # 아마 운영 환경에서는 데이터베이스는 매니지드 서비스를 사용하는게 바람직할 것
     - ReadWriteOnce
   volumeMode: Filesystem
-  storageClassName: hostpath
+  storageClassName: {{ .Values.database.persistentVolume.spec.storageClassName }}
   resources:
     requests:
       storage: {{ .Values.database.storage }}
