@@ -1,6 +1,6 @@
 # prettier-ignore
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: database
   labels:
@@ -22,6 +22,7 @@ spec:
         tier: database
         environment: {{ .Values.environment }}
     spec:
+      terminationGracePeriodSeconds: 10
       containers:
         - name: database
           image: {{ .Values.database.image }}
