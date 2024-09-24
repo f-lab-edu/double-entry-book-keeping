@@ -24,7 +24,7 @@ database:
       memory: 1024Mi
   persistentVolume:
     spec:
-      storageClassName: local-storage
+      storageClassName: local
 
 server:
   configMap:

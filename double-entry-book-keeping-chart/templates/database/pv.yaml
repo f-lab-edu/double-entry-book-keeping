@@ -21,7 +21,7 @@ spec:
   claimRef:
     name: double-entry-book-keeping-pvc
     namespace: default
-  {{- if eq .Values.database.persistentVolume.spec.storageClassName "local-storage" }}
+  {{- if eq .Values.database.persistentVolume.spec.storageClassName "local" }}
   local:
     path: "/var/lib/mysql-data"
   nodeAffinity:
