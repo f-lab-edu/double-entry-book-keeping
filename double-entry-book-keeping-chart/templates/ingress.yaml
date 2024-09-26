@@ -3,8 +3,6 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: double-entry-book-keeping-ingress
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
   labels:
     app: double-entry-book-keeping
     environment: {{ .Values.environment }}
