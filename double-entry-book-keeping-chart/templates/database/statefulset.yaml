@@ -1,6 +1,6 @@
 # prettier-ignore
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: database
   labels:
@@ -8,6 +8,7 @@ metadata:
     tier: database
     environment: {{ .Values.environment }}
 spec:
+  serviceName: double-entry-book-keeping-database-service
   # 레플리카 개수는 기본적으로 1이지만, 데이터베이스 pod이 오직 1개임을 보다 명시적으로 설정
   replicas: 1
   selector:
@@ -22,6 +23,7 @@ spec:
         tier: database
         environment: {{ .Values.environment }}
     spec:
+      terminationGracePeriodSeconds: 10
       containers:
         - name: database
           image: {{ .Values.database.image }}

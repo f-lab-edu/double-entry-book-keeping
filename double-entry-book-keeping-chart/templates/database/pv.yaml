@@ -17,6 +17,20 @@ spec:
     # 아마 운영 환경에서는 데이터베이스는 매니지드 서비스를 사용하는게 바람직할 것
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: hostpath
-  hostPath:
+  storageClassName: {{ .Values.database.persistentVolume.spec.storageClassName }}
+  claimRef:
+    name: double-entry-book-keeping-pvc
+    namespace: default
+  {{- if eq .Values.database.persistentVolume.spec.storageClassName "local" }}
+  local:
     path: "/var/lib/mysql-data"
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/hostname
+            operator: In
+            values:
+            - docker-desktop
+  {{- end }}
+ 
