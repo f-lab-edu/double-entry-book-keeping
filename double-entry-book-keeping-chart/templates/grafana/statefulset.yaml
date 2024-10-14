@@ -8,6 +8,7 @@ metadata:
     tier: grafana
     environment: {{ .Values.environment }}
 spec:
+  serviceName: grafana-service
   selector:
     matchLabels:
       app: double-entry-book-keeping

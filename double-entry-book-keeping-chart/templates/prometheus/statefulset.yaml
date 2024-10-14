@@ -1,6 +1,6 @@
 # prettier-ignore
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: prometheus
   labels:
@@ -8,6 +8,8 @@ metadata:
     tier: prometheus
     environment: {{ .Values.environment }}
 spec:
+  serviceName: prometheus-service
+  replicas: 1
   selector:  
     matchLabels:
       app: double-entry-book-keeping
@@ -20,6 +22,7 @@ spec:
         tier: prometheus
         environment: {{ .Values.environment }}
     spec:
+      terminationGracePeriodSeconds: 10
       serviceAccountName: prometheus-service-account
       containers:
         - name: prometheus
